@@ -1,0 +1,7 @@
+coverage_service: coveralls
+workspace: ReactiveStore.xcworkspace
+xcodeproj: ReactiveStore.xcodeproj
+scheme: ReactiveStore
+ignore:
+  - ../*
+  - ReactiveStoreTests/*

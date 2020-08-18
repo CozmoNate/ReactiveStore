@@ -1,5 +1,5 @@
 //
-//  ReactiveStore.Backlog.swift
+//  ReactiveStoreBacklog.swift
 //
 //  Copyright © 2020 Natan Zalkin. All rights reserved.
 //
@@ -29,48 +29,58 @@
 
 import Foundation
 
-internal extension ReactiveStore {
+public class ReactiveStoreBacklog {
+    public typealias Action = () -> Void
     
-    class Backlog {
+    internal class Item {
+        let action: Action
+        var next: Item?
         
-        private class Item {
-            let action: () -> Void
-            var next: Item?
-            
-            init(_ action: @escaping () -> Void) {
-                self.action = action
-            }
+        init(_ action: @escaping Action) {
+            self.action = action
         }
-        
-        var isEmpty: Bool {
-            return head == nil
+    }
+    
+    public var count: Int {
+        guard var item = head else {
+            return 0
         }
-        
-        private var head: Item? {
-            didSet { if head == nil { tail = nil } }
+        var count = 1
+        while let next = item.next {
+            count += 1
+            item = next
         }
-        
-        private var tail: Item?
-        
-        func push(_ action: @escaping () -> Void) {
-            let item = Item(action)
-            if let last = tail {
-                last.next = item
-                tail = item
-            } else {
-                head = item
-                tail = head
-            }
+        return count
+    }
+    
+    public var isEmpty: Bool {
+        return head == nil
+    }
+    
+    internal var head: Item? {
+        didSet { if head == nil { tail = nil } }
+    }
+    
+    internal var tail: Item?
+    
+    public init() {}
+    
+    public func push(_ action: @escaping Action) {
+        let item = Item(action)
+        if let last = tail {
+            last.next = item
+            tail = item
+        } else {
+            head = item
+            tail = head
         }
-        
-        @discardableResult
-        func pop() -> Bool {
-            guard let first = head else {
-                return false
-            }
-            head = first.next
-            first.action()
-            return true
+    }
+    
+    public func pop() -> Action? {
+        guard let first = head else {
+            return nil
         }
+        head = first.next
+        return first.action
     }
 }

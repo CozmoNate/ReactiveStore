@@ -29,104 +29,119 @@
 
 import Foundation
 
-let ReactiveStoreChangedNotification = Notification.Name("ReactiveStoreChanged")
-let ReactiveStoreChangedKeyPathsKey = "changedKeyPaths"
+public let ReactiveStoreDidChangeNotification = Notification.Name("ReactiveStoreDidChange")
+public let ReactiveStoreKeyPathsKey = "keyPaths"
 
 /// ReactiveStore is an object that represents a state and performs self mutation by handling dispatched actions.
-open class ReactiveStore: AnyStore {
+public protocol ReactiveStore: AnyObject {
     
-    /// The flag indicating if the store is handling the action at the moment.
-    internal(set) public var isExecuting: Bool = false
+    /// A store handler closure. Handler applies changes to the store and returns the list of changed fields.
+    /// **Important** You must call *done* closure in your action handler block, to notify the store that the action is finished executing.
+    typealias ActionHandler<Action> = (_ store: Self, _ action: Action, _ done: @escaping () -> Void) -> Void
     
-    /// The list of type-erased mutation blocks associated with specific action types.
-    internal var mutators: [ObjectIdentifier: Any]
+    /// The list of type-erased closures associated with specific  action types.
+    var actions: [ObjectIdentifier: Any] { get set }
+    
+    /// The flag indicating if the store dispatches actions at the moment.
+    var isDispatching: Bool { get set }
     
     /// The FIFO queue of postponed actions.
-    internal var backlog: Backlog
+    var backlog: ReactiveStoreBacklog { get }
     
-    public init() {
-        mutators = [:]
-        backlog = Backlog()
-    }
 }
 
-public extension AnyStore where Self: ReactiveStore {
+public extension ReactiveStore {
     
-    /// A store mutator closure. Mutator applies changes to the store and returns the list of changed fields.
-    typealias Mutator<Action> = (_ store: Self, _ action: Action, _ completion: @escaping () -> Void) -> Void
-    
-    /// Associates a mutation with actions of the specified type.
-    /// - Parameter action: The type of the actions to associate with the mutation.
-    /// - Parameter execute: The mutator closure that will be invoked when the action received.
-    func registerMutator<Action>(for action: Action.Type, mutator: @escaping Mutator<Action>) {
-        mutators[ObjectIdentifier(Action.self)] = mutator
+    /// Associates a handler with actions of the specified type.
+    /// - Parameter action: The type of the actions to associate with the handler.
+    /// - Parameter execute: The handler closure that will be invoked when the action received.
+    func register<Action>(_ action: Action.Type, handler: @escaping ActionHandler<Action>) {
+        actions.updateValue(handler, forKey: ObjectIdentifier(Action.self))
     }
     
-    /// Unregisters mutator associated with actions of the specified type.
-    /// - Parameter action: The action for which the associated mutator should be removed
-    @discardableResult
-    func unregisterMutator<Action>(for action: Action.Type) -> Mutator<Action>? {
-        return mutators.removeValue(forKey: ObjectIdentifier(Action.self)) as? Mutator<Action>
+    /// Unregisters handler associated with actions of the specified type.
+    /// - Parameter action: The action for which the associated handler should be removed.
+    func unregister<Action>(_ action: Action.Type) {
+        actions.removeValue(forKey: ObjectIdentifier(Action.self))
     }
     
-    /// Unregisters all mutators.
-    func unregisterAllMutators() {
-        mutators.removeAll()
+    /// Unregisters all actions
+    func unregisterAll() {
+        actions.removeAll()
     }
     
+    /// Executes the action immediately.
+    /// **Important** It is not recommended to execute actions directly. Use dispatch() method instead.
+    /// - Parameter action: The action to execute.
+    func execute<Action>(_ action: Action, completion: @escaping () -> Void) {
+        guard let handle = self.actions[ObjectIdentifier(Action.self)] as? ActionHandler<Action> else {
+            completion()
+            return
+        }
+        
+        handle(self, action, completion)
+    }
+    
+    /// Notify observers about changed properties.
+    func notify(keyPathsChanged: Set<PartialKeyPath<Self>>) {
+        NotificationCenter.default.post(
+            name: ReactiveStoreDidChangeNotification,
+            object: self,
+            userInfo: [ReactiveStoreKeyPathsKey: keyPathsChanged]
+        )
+    }
+    
+    /// Executes the action immediately or postpones the action if another async action is executing at the moment.
+    /// If dispatched while an async action is executing, the action will be send to backlog.
+    /// Actions from backlog are executed serially in FIFO order, right after the previous action finishes dispatching.
+    func dispatch<Action>(_ action: Action, completion: (() -> Void)? = nil) {
+        
+        let actionBlock: () -> Void = { [weak self] in
+            self?.isDispatching = true
+            self?.execute(action) {
+                if let backlogAction = self?.backlog.pop() {
+                    backlogAction()
+                } else {
+                    self?.isDispatching = false
+                }
+                completion?()
+            }
+        }
+
+        if isDispatching {
+            backlog.push(actionBlock)
+            return
+        }
+        
+        guard let backlogAction = backlog.pop() else {
+            actionBlock()
+            return
+        }
+        
+        backlog.push(actionBlock)
+        
+        backlogAction()
+    }
+
     /// Adds an observer that will be invoked each time the store changes.
     /// - Parameter queue: The queue to schedule change handler on.
     /// - Parameter changeHandler: The closure will be invoked each time the store changes.
-    func addObserver(queue: OperationQueue = .main, handler: @escaping (Self, Set<PartialKeyPath<Self>>) -> Void) -> Subscription {
-        return Subscription(store: self, queue: queue, handler: handler)
+    func addObserver(queue: OperationQueue = .main,
+                     handler: @escaping (Self, Set<PartialKeyPath<Self>>) -> Void) -> ReactiveStoreSubscription {
+        return ReactiveStoreSubscription(store: self, queue: queue, handler: handler)
     }
     
     /// Adds an observer that will be invoked each time the store changes.
-    /// - Parameter queue: The queue to schedule change handler on
     /// - Parameter keyPaths: The list of KeyPaths describing the fields in the store that should trigger the change handler upon mutation.
+    /// - Parameter queue: The queue to schedule change handler on
     /// - Parameter handler: The closure will be invoked each time the store changes fields included in observingKeyPaths param.
-    func addObserver(observing keyPaths: [PartialKeyPath<Self>], queue: OperationQueue = .main, handler: @escaping (Self) -> Void) -> Subscription {
-        return Subscription(store: self, queue: queue) { state, changedKeyPaths in
+    func addObserver(for keyPaths: [PartialKeyPath<Self>],
+                     queue: OperationQueue = .main,
+                     handler: @escaping (Self) -> Void) -> ReactiveStoreSubscription {
+        return ReactiveStoreSubscription(store: self, queue: queue) { state, changedKeyPaths in
             if !changedKeyPaths.isDisjoint(with: keyPaths) {
                 handler(self)
             }
-        }
-    }
-    
-    /// Dispatches an action to the store. All actions are executed serially in FIFO order.
-    /// - Parameter action: The action to dispatch.
-    func dispatch<Action>(_ action: Action) {
-        if isExecuting {
-            backlog.push { [weak self] in
-                self?.execute(action: action)
-            }
-        } else if !backlog.pop() {
-            isExecuting = true
-            execute(action: action)
-        }
-    }
-    
-    /// Send notification about changes to observers.
-    func notify(keyPathsChanged: Set<PartialKeyPath<Self>>) {
-        NotificationCenter.default.post(
-            name: ReactiveStoreChangedNotification,
-            object: self,
-            userInfo: [ReactiveStoreChangedKeyPathsKey: keyPathsChanged]
-        )
-    }
-}
-
-internal extension AnyStore where Self: ReactiveStore {
-    
-    func execute<Action>(action: Action) {
-        guard let mutate = self.mutators[ObjectIdentifier(Action.self)] as? Mutator<Action> else {
-            return
-        }
-
-        mutate(self, action) { [weak self] in
-            guard let self = self else { return }
-            self.isExecuting = false
-            self.backlog.pop()
         }
     }
 }

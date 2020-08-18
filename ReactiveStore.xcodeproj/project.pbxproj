@@ -13,12 +13,12 @@
 		2F07612524E7FC1400A91409 /* ReactiveStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F07612424E7FC1400A91409 /* ReactiveStore.swift */; };
 		2F07612724E7FCDE00A91409 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2F07612624E7FCDE00A91409 /* README.md */; };
 		2F07612924E7FCE300A91409 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 2F07612824E7FCE300A91409 /* LICENSE */; };
-		2F07612B24E7FD4100A91409 /* AnyStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F07612A24E7FD4100A91409 /* AnyStore.swift */; };
-		2F07612D24E7FD8600A91409 /* ReactiveStore.Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F07612C24E7FD8600A91409 /* ReactiveStore.Subscription.swift */; };
-		2F07612F24E7FE4100A91409 /* ReactiveStore.Backlog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F07612E24E7FE4100A91409 /* ReactiveStore.Backlog.swift */; };
+		2F07612D24E7FD8600A91409 /* ReactiveStoreSubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F07612C24E7FD8600A91409 /* ReactiveStoreSubscription.swift */; };
+		2F07612F24E7FE4100A91409 /* ReactiveStoreBacklog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F07612E24E7FE4100A91409 /* ReactiveStoreBacklog.swift */; };
 		2F07613F24E8042400A91409 /* ReactiveStore.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 2F07613E24E8042400A91409 /* ReactiveStore.podspec */; };
 		2F07614824E806D600A91409 /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = 2F07614724E806D600A91409 /* Quick */; };
 		2F07614B24E806EE00A91409 /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = 2F07614A24E806EE00A91409 /* Nimble */; };
+		2F07615D24EAB82100A91409 /* MockStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F07615C24EAB82100A91409 /* MockStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,11 +41,11 @@
 		2F07612424E7FC1400A91409 /* ReactiveStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReactiveStore.swift; sourceTree = "<group>"; };
 		2F07612624E7FCDE00A91409 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		2F07612824E7FCE300A91409 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		2F07612A24E7FD4100A91409 /* AnyStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyStore.swift; sourceTree = "<group>"; };
-		2F07612C24E7FD8600A91409 /* ReactiveStore.Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactiveStore.Subscription.swift; sourceTree = "<group>"; };
-		2F07612E24E7FE4100A91409 /* ReactiveStore.Backlog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactiveStore.Backlog.swift; sourceTree = "<group>"; };
+		2F07612C24E7FD8600A91409 /* ReactiveStoreSubscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactiveStoreSubscription.swift; sourceTree = "<group>"; };
+		2F07612E24E7FE4100A91409 /* ReactiveStoreBacklog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactiveStoreBacklog.swift; sourceTree = "<group>"; };
 		2F07613C24E8040300A91409 /* Package.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		2F07613E24E8042400A91409 /* ReactiveStore.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReactiveStore.podspec; sourceTree = "<group>"; };
+		2F07615C24EAB82100A91409 /* MockStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,10 +95,9 @@
 			isa = PBXGroup;
 			children = (
 				2F07610D24E7FC0500A91409 /* ReactiveStore.h */,
-				2F07612A24E7FD4100A91409 /* AnyStore.swift */,
 				2F07612424E7FC1400A91409 /* ReactiveStore.swift */,
-				2F07612E24E7FE4100A91409 /* ReactiveStore.Backlog.swift */,
-				2F07612C24E7FD8600A91409 /* ReactiveStore.Subscription.swift */,
+				2F07612E24E7FE4100A91409 /* ReactiveStoreBacklog.swift */,
+				2F07612C24E7FD8600A91409 /* ReactiveStoreSubscription.swift */,
 				2F07610E24E7FC0500A91409 /* Info.plist */,
 			);
 			path = ReactiveStore;
@@ -107,6 +106,7 @@
 		2F07611724E7FC0500A91409 /* ReactiveStoreTests */ = {
 			isa = PBXGroup;
 			children = (
+				2F07615C24EAB82100A91409 /* MockStore.swift */,
 				2F07611824E7FC0500A91409 /* ReactiveStoreTests.swift */,
 				2F07611A24E7FC0500A91409 /* Info.plist */,
 			);
@@ -234,10 +234,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2F07612D24E7FD8600A91409 /* ReactiveStore.Subscription.swift in Sources */,
-				2F07612B24E7FD4100A91409 /* AnyStore.swift in Sources */,
+				2F07612D24E7FD8600A91409 /* ReactiveStoreSubscription.swift in Sources */,
 				2F07612524E7FC1400A91409 /* ReactiveStore.swift in Sources */,
-				2F07612F24E7FE4100A91409 /* ReactiveStore.Backlog.swift in Sources */,
+				2F07612F24E7FE4100A91409 /* ReactiveStoreBacklog.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,6 +245,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2F07611924E7FC0500A91409 /* ReactiveStoreTests.swift in Sources */,
+				2F07615D24EAB82100A91409 /* MockStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -397,7 +397,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kzlekk.ReactiveStore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -424,7 +424,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kzlekk.ReactiveStore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -438,6 +438,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = R3YQC22TX8;
 				INFOPLIST_FILE = ReactiveStoreTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -456,6 +457,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = R3YQC22TX8;
 				INFOPLIST_FILE = ReactiveStoreTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

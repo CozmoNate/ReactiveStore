@@ -1,5 +1,5 @@
 //
-//  AnyStore.swift
+//  ReactiveStoreSubscription.swift
 //
 //  Copyright © 2020 Natan Zalkin. All rights reserved.
 //
@@ -29,4 +29,33 @@
 
 import Foundation
 
-public protocol AnyStore: AnyObject {}
+public class ReactiveStoreSubscription {
+    
+    internal let observer: NSObjectProtocol
+    
+    internal init<Store: ReactiveStore>(store: Store, queue: OperationQueue, handler: @escaping (Store, Set<PartialKeyPath<Store>>) -> Void) {
+        observer = NotificationCenter.default.addObserver(forName: ReactiveStoreDidChangeNotification, object: store, queue: queue) { notification in
+            guard let store = notification.object as? Store else {
+                return
+            }
+            guard let keyPaths = notification.userInfo?[ReactiveStoreKeyPathsKey] as? Set<PartialKeyPath<Store>> else {
+                return
+            }
+            handler(store, keyPaths)
+        }
+    }
+    
+    /// Cancels current subscription and stops receiving updates.
+    public func cancel() {
+        NotificationCenter.default.removeObserver(observer)
+    }
+    
+    /// Stores subscription in the array.
+    public func store(in subscriptions: inout [ReactiveStoreSubscription]) {
+        subscriptions.append(self)
+    }
+    
+    deinit {
+        cancel()
+    }
+}

@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'ReactiveStore'
-  s.version          = '1.0.0'
+  s.version          = '1.1.0'
   s.summary          = 'Simple reactive store implementation for state management written in Swift.'
   s.homepage         = 'https://github.com/kzlekk/ReactiveStore'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }

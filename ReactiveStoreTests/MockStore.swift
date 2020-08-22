@@ -29,8 +29,9 @@ class MockStore: ReactiveStore {
     private(set) var value = "initial"
     private(set) var number = 0
     
-    var actions = [ObjectIdentifier: Any]()
-    var backlog = ReactiveStoreBacklog()
+    var actionHandlers = [ObjectIdentifier: Any]()
+    var actionQueue = ReactiveStoreQueue()
+
     var isDispatching = false
     
     init() {

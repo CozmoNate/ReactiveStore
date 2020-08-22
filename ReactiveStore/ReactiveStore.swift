@@ -39,14 +39,14 @@ public protocol ReactiveStore: AnyObject {
     /// **Important** You must call *done* closure in your action handler block, to notify the store that the action is finished executing.
     typealias ActionHandler<Action> = (_ store: Self, _ action: Action, _ done: @escaping () -> Void) -> Void
     
-    /// The list of type-erased closures associated with specific  action types.
-    var actions: [ObjectIdentifier: Any] { get set }
+    /// The list of type-erased closures associated with specific action types.
+    var actionHandlers: [ObjectIdentifier: Any] { get set }
     
-    /// The flag indicating if the store dispatches actions at the moment.
+    /// The queue of postponed actions.
+    var actionQueue: ReactiveStoreQueue { get }
+    
+    /// The flag indicating if the store dispatches an action at the moment.
     var isDispatching: Bool { get set }
-    
-    /// The FIFO queue of postponed actions.
-    var backlog: ReactiveStoreBacklog { get }
     
 }
 
@@ -56,25 +56,25 @@ public extension ReactiveStore {
     /// - Parameter action: The type of the actions to associate with the handler.
     /// - Parameter execute: The handler closure that will be invoked when the action received.
     func register<Action>(_ action: Action.Type, handler: @escaping ActionHandler<Action>) {
-        actions.updateValue(handler, forKey: ObjectIdentifier(Action.self))
+        actionHandlers.updateValue(handler, forKey: ObjectIdentifier(Action.self))
     }
     
     /// Unregisters handler associated with actions of the specified type.
     /// - Parameter action: The action for which the associated handler should be removed.
     func unregister<Action>(_ action: Action.Type) {
-        actions.removeValue(forKey: ObjectIdentifier(Action.self))
+        actionHandlers.removeValue(forKey: ObjectIdentifier(Action.self))
     }
     
-    /// Unregisters all actions
+    /// Unregisters all action handlers
     func unregisterAll() {
-        actions.removeAll()
+        actionHandlers.removeAll()
     }
     
     /// Executes the action immediately.
     /// **Important** It is not recommended to execute actions directly. Use dispatch() method instead.
     /// - Parameter action: The action to execute.
     func execute<Action>(_ action: Action, completion: @escaping () -> Void) {
-        guard let handle = self.actions[ObjectIdentifier(Action.self)] as? ActionHandler<Action> else {
+        guard let handle = self.actionHandlers[ObjectIdentifier(Action.self)] as? ActionHandler<Action> else {
             completion()
             return
         }
@@ -95,11 +95,10 @@ public extension ReactiveStore {
     /// If dispatched while an async action is executing, the action will be send to backlog.
     /// Actions from backlog are executed serially in FIFO order, right after the previous action finishes dispatching.
     func dispatch<Action>(_ action: Action, completion: (() -> Void)? = nil) {
-        
         let actionBlock: () -> Void = { [weak self] in
             self?.isDispatching = true
             self?.execute(action) {
-                if let backlogAction = self?.backlog.pop() {
+                if let backlogAction = self?.actionQueue.dequeue() {
                     backlogAction()
                 } else {
                     self?.isDispatching = false
@@ -109,18 +108,17 @@ public extension ReactiveStore {
         }
 
         if isDispatching {
-            backlog.push(actionBlock)
+            actionQueue.enqueue(actionBlock)
             return
         }
         
-        guard let backlogAction = backlog.pop() else {
-            actionBlock()
+        if let backlogAction = actionQueue.dequeue() {
+            actionQueue.enqueue(actionBlock)
+            backlogAction()
             return
         }
         
-        backlog.push(actionBlock)
-        
-        backlogAction()
+        actionBlock()
     }
 
     /// Adds an observer that will be invoked each time the store changes.

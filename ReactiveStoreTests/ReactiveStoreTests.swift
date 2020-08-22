@@ -11,6 +11,22 @@ import Nimble
 
 @testable import ReactiveStore
 
+extension ReactiveStoreQueue {
+    
+    var count: Int {
+        guard var item = head else {
+            return 0
+        }
+        var count = 1
+        while let next = item.next {
+            count += 1
+            item = next
+        }
+        return count
+    }
+    
+}
+
 class ReactiveStoreTests: QuickSpec {
     override func spec() {
         describe("ReactiveStore") {
@@ -21,7 +37,7 @@ class ReactiveStoreTests: QuickSpec {
             }
             
             it("registered an action correctly") {
-                let handler = subject.actions[ObjectIdentifier(MockStore.Action.Change.self)] as? MockStore.ActionHandler<MockStore.Action.Change>
+                let handler = subject.actionHandlers[ObjectIdentifier(MockStore.Action.Change.self)] as? MockStore.ActionHandler<MockStore.Action.Change>
                 expect(handler).toNot(beNil())
             }
             
@@ -41,7 +57,7 @@ class ReactiveStoreTests: QuickSpec {
                 }
                 
                 it("can handles the action and correctly changes the state") {
-                    expect(subject.backlog.isEmpty).to(beTrue())
+                    expect(subject.actionQueue.isEmpty).to(beTrue())
                     expect(subject.value).to(equal("initial"))
                     expect(subject.value).toEventually(equal("sync test"))
                 }
@@ -56,11 +72,11 @@ class ReactiveStoreTests: QuickSpec {
                 
                 it("can handles the action and correctly changes the state") {
                     expect(subject.isDispatching).to(beTrue())
-                    expect(subject.backlog.count).to(equal(2))
+                    expect(subject.actionQueue.count).to(equal(2))
                     expect(subject.value).to(equal("initial"))
                     expect(subject.value).toEventually(equal("async test finish"))
                     expect(subject.isDispatching).to(beFalse())
-                    expect(subject.backlog.isEmpty).to(beTrue())
+                    expect(subject.actionQueue.isEmpty).to(beTrue())
                 }
             }
             
@@ -71,7 +87,7 @@ class ReactiveStoreTests: QuickSpec {
                 }
                 
                 it("does not handle unregistered action") {
-                    expect(subject.actions.count).to(equal(2))
+                    expect(subject.actionHandlers.count).to(equal(2))
                     expect(subject.value).to(equal("initial"))
                 }
             }
@@ -82,7 +98,7 @@ class ReactiveStoreTests: QuickSpec {
                 }
                 
                 it("has no registered actions") {
-                    expect(subject.actions).to(beEmpty())
+                    expect(subject.actionHandlers).to(beEmpty())
                 }
             }
             

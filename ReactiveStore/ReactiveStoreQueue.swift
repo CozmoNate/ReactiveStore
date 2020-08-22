@@ -1,5 +1,5 @@
 //
-//  ReactiveStoreBacklog.swift
+//  ReactiveStoreQueue.swift
 //
 //  Copyright © 2020 Natan Zalkin. All rights reserved.
 //
@@ -29,7 +29,7 @@
 
 import Foundation
 
-public class ReactiveStoreBacklog {
+public class ReactiveStoreQueue {
     public typealias Action = () -> Void
     
     internal class Item {
@@ -40,19 +40,7 @@ public class ReactiveStoreBacklog {
             self.action = action
         }
     }
-    
-    public var count: Int {
-        guard var item = head else {
-            return 0
-        }
-        var count = 1
-        while let next = item.next {
-            count += 1
-            item = next
-        }
-        return count
-    }
-    
+
     public var isEmpty: Bool {
         return head == nil
     }
@@ -65,7 +53,7 @@ public class ReactiveStoreBacklog {
     
     public init() {}
     
-    public func push(_ action: @escaping Action) {
+    public func enqueue(_ action: @escaping Action) {
         let item = Item(action)
         if let last = tail {
             last.next = item
@@ -76,7 +64,7 @@ public class ReactiveStoreBacklog {
         }
     }
     
-    public func pop() -> Action? {
+    public func dequeue() -> Action? {
         guard let first = head else {
             return nil
         }

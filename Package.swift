@@ -12,10 +12,20 @@ let package = Package(
         .tvOS(.v10)
     ],
     products: [
-        .library(name: "ReactiveStore", targets: ["ReactiveStore"])
+        .library(name: "ReactiveStore",
+                 targets: ["ReactiveStore"]),
+        .library(name: "ReactiveStoreObserving",
+                 targets: ["ReactiveStoreObserving"]),
     ],
     targets: [
-        .target(name: "ReactiveStore", dependencies: [], path: "ReactiveStore"),
+        .target(name: "ReactiveStore",
+                dependencies: [],
+                path: "ReactiveStore",
+                sources: ["ReactiveStore.swift"]),
+        .target(name: "ReactiveStoreObserving",
+                dependencies: ["ReactiveStore"],
+                path: "ReactiveStore",
+                sources: ["ReactiveStoreObserving.swift"]),
     ],
     swiftLanguageVersions: [ .v5 ]
 )

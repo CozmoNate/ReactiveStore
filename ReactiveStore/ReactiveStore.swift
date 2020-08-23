@@ -29,9 +29,6 @@
 
 import Foundation
 
-public let ReactiveStoreDidChangeNotification = Notification.Name("ReactiveStoreDidChange")
-public let ReactiveStoreKeyPathsKey = "keyPaths"
-
 /// ReactiveStore is an object that represents a state and performs self mutation by handling dispatched actions.
 public protocol ReactiveStore: AnyObject {
     
@@ -82,15 +79,6 @@ public extension ReactiveStore {
         handle(self, action, completion)
     }
     
-    /// Notify observers about changed properties.
-    func notify(keyPathsChanged: Set<PartialKeyPath<Self>>) {
-        NotificationCenter.default.post(
-            name: ReactiveStoreDidChangeNotification,
-            object: self,
-            userInfo: [ReactiveStoreKeyPathsKey: keyPathsChanged]
-        )
-    }
-    
     /// Executes the action immediately or postpones the action if another async action is executing at the moment.
     /// If dispatched while an async action is executing, the action will be send to backlog.
     /// Actions from backlog are executed serially in FIFO order, right after the previous action finishes dispatching.
@@ -120,26 +108,48 @@ public extension ReactiveStore {
         
         actionBlock()
     }
+}
 
-    /// Adds an observer that will be invoked each time the store changes.
-    /// - Parameter queue: The queue to schedule change handler on.
-    /// - Parameter changeHandler: The closure will be invoked each time the store changes.
-    func addObserver(queue: OperationQueue = .main,
-                     handler: @escaping (Self, Set<PartialKeyPath<Self>>) -> Void) -> ReactiveStoreSubscription {
-        return ReactiveStoreSubscription(store: self, queue: queue, handler: handler)
+public class ReactiveStoreQueue {
+    public typealias Action = () -> Void
+    
+    internal class Item {
+        let action: Action
+        var next: Item?
+        
+        init(_ action: @escaping Action) {
+            self.action = action
+        }
+    }
+
+    public var isEmpty: Bool {
+        return head == nil
     }
     
-    /// Adds an observer that will be invoked each time the store changes.
-    /// - Parameter keyPaths: The list of KeyPaths describing the fields in the store that should trigger the change handler upon mutation.
-    /// - Parameter queue: The queue to schedule change handler on
-    /// - Parameter handler: The closure will be invoked each time the store changes fields included in observingKeyPaths param.
-    func addObserver(for keyPaths: [PartialKeyPath<Self>],
-                     queue: OperationQueue = .main,
-                     handler: @escaping (Self) -> Void) -> ReactiveStoreSubscription {
-        return ReactiveStoreSubscription(store: self, queue: queue) { state, changedKeyPaths in
-            if !changedKeyPaths.isDisjoint(with: keyPaths) {
-                handler(self)
-            }
+    internal var head: Item? {
+        didSet { if head == nil { tail = nil } }
+    }
+    
+    internal var tail: Item?
+    
+    public init() {}
+    
+    public func enqueue(_ action: @escaping Action) {
+        let item = Item(action)
+        if let last = tail {
+            last.next = item
+            tail = item
+        } else {
+            head = item
+            tail = head
         }
+    }
+    
+    public func dequeue() -> Action? {
+        guard let first = head else {
+            return nil
+        }
+        head = first.next
+        return first.action
     }
 }

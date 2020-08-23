@@ -29,6 +29,43 @@
 
 import Foundation
 
+public let ReactiveStoreDidChangeNotification = Notification.Name("ReactiveStoreDidChange")
+public let ReactiveStoreKeyPathsKey = "keyPaths"
+
+public extension ReactiveStore {
+
+    /// Notify observers about changed properties.
+    func notify(keyPathsChanged: Set<PartialKeyPath<Self>>) {
+        NotificationCenter.default.post(
+            name: ReactiveStoreDidChangeNotification,
+            object: self,
+            userInfo: [ReactiveStoreKeyPathsKey: keyPathsChanged]
+        )
+    }
+    
+    /// Adds an observer that will be invoked each time the store changes.
+    /// - Parameter queue: The queue to schedule change handler on.
+    /// - Parameter changeHandler: The closure will be invoked each time the store changes.
+    func addObserver(queue: OperationQueue = .main,
+                     handler: @escaping (Self, Set<PartialKeyPath<Self>>) -> Void) -> ReactiveStoreSubscription {
+        return ReactiveStoreSubscription(store: self, queue: queue, handler: handler)
+    }
+    
+    /// Adds an observer that will be invoked each time the store changes.
+    /// - Parameter keyPaths: The list of KeyPaths describing the fields in the store that should trigger the change handler upon mutation.
+    /// - Parameter queue: The queue to schedule change handler on
+    /// - Parameter handler: The closure will be invoked each time the store changes fields included in observingKeyPaths param.
+    func addObserver(for keyPaths: [PartialKeyPath<Self>],
+                     queue: OperationQueue = .main,
+                     handler: @escaping (Self) -> Void) -> ReactiveStoreSubscription {
+        return ReactiveStoreSubscription(store: self, queue: queue) { state, changedKeyPaths in
+            if !changedKeyPaths.isDisjoint(with: keyPaths) {
+                handler(self)
+            }
+        }
+    }
+}
+
 public class ReactiveStoreSubscription {
     
     internal let observer: NSObjectProtocol

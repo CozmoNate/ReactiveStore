@@ -43,7 +43,7 @@ class MockStore: ReactiveStore {
         }
         
         register(Action.AsyncChange.self) { (store, action, done) in
-            OperationQueue.current?.underlyingQueue?.asyncAfter(deadline: .now() + .microseconds(250)) {
+            OperationQueue.current?.underlyingQueue?.asyncAfter(deadline: .now() + .milliseconds(250)) {
                 store.value = action.value
                 store.notify(keyPathsChanged: [\MockStore.value])
                 done()

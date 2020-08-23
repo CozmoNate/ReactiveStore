@@ -33,8 +33,8 @@ import Foundation
 public protocol ReactiveStore: AnyObject {
     
     /// A store handler closure. Handler applies changes to the store and returns the list of changed fields.
-    /// **Important** You must call *done* closure in your action handler block, to notify the store that the action is finished executing.
-    typealias ActionHandler<Action> = (_ store: Self, _ action: Action, _ done: @escaping () -> Void) -> Void
+    /// **Important** You must call *completion* closure in your action handler block, to notify the store that the action is finished executing.
+    typealias ActionHandler<Action> = (_ store: Self, _ action: Action, _ completion: @escaping () -> Void) -> Void
     
     /// The list of type-erased closures associated with specific action types.
     var actionHandlers: [ObjectIdentifier: Any] { get set }
@@ -50,8 +50,9 @@ public protocol ReactiveStore: AnyObject {
 public extension ReactiveStore {
     
     /// Associates a handler with actions of the specified type.
-    /// - Parameter action: The type of the actions to associate with the handler.
-    /// - Parameter execute: The handler closure that will be invoked when the action received.
+    /// - Parameters:
+    ///   - action: The type of the actions to associate with the handler.
+    ///   - execute: The handler closure that will be invoked when the action received.
     func register<Action>(_ action: Action.Type, handler: @escaping ActionHandler<Action>) {
         actionHandlers.updateValue(handler, forKey: ObjectIdentifier(Action.self))
     }
@@ -67,11 +68,31 @@ public extension ReactiveStore {
         actionHandlers.removeAll()
     }
     
+    /// Executes the action immediately or postpones the action if another async action is executing at the moment.
+    /// If dispatched while an async action is executing, the action will be send to the queue.
+    /// Actions from queue are executed serially in FIFO order, right after the previous action finishes dispatching.
+    /// - Parameters:
+    ///   - action: The type of the actions to associate with the handler.
+    func dispatch<Action>(_ action: Action) {
+        let actionBlock: () -> Void = { [weak self] in
+            self?.execute(action) { self?.flush() }
+        }
+
+        if isDispatching {
+            actionQueue.enqueue(actionBlock)
+        } else {
+            isDispatching = true
+            actionBlock()
+        }
+    }
+}
+
+internal extension ReactiveStore {
+    
     /// Executes the action immediately.
-    /// **Important** It is not recommended to execute actions directly. Use dispatch() method instead.
     /// - Parameter action: The action to execute.
     func execute<Action>(_ action: Action, completion: @escaping () -> Void) {
-        guard let handle = self.actionHandlers[ObjectIdentifier(Action.self)] as? ActionHandler<Action> else {
+        guard let handle = actionHandlers[ObjectIdentifier(Action.self)] as? ActionHandler<Action> else {
             completion()
             return
         }
@@ -79,34 +100,13 @@ public extension ReactiveStore {
         handle(self, action, completion)
     }
     
-    /// Executes the action immediately or postpones the action if another async action is executing at the moment.
-    /// If dispatched while an async action is executing, the action will be send to backlog.
-    /// Actions from backlog are executed serially in FIFO order, right after the previous action finishes dispatching.
-    func dispatch<Action>(_ action: Action, completion: (() -> Void)? = nil) {
-        let actionBlock: () -> Void = { [weak self] in
-            self?.isDispatching = true
-            self?.execute(action) {
-                if let backlogAction = self?.actionQueue.dequeue() {
-                    backlogAction()
-                } else {
-                    self?.isDispatching = false
-                }
-                completion?()
-            }
+    /// Executes the actions from the queue.
+    func flush() {
+        if let nextAction = actionQueue.dequeue() {
+            nextAction()
+        } else {
+            isDispatching = false
         }
-
-        if isDispatching {
-            actionQueue.enqueue(actionBlock)
-            return
-        }
-        
-        if let backlogAction = actionQueue.dequeue() {
-            actionQueue.enqueue(actionBlock)
-            backlogAction()
-            return
-        }
-        
-        actionBlock()
     }
 }
 

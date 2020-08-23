@@ -37,6 +37,13 @@
             BlueprintName = "ReactiveStore"
             ReferencedContainer = "container:ReactiveStore.xcodeproj">
          </BuildableReference>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "2F5DF87724F234AE002079AA"
+            BuildableName = "ReactiveStoreObserving.framework"
+            BlueprintName = "ReactiveStoreObserving"
+            ReferencedContainer = "container:ReactiveStore.xcodeproj">
+         </BuildableReference>
       </CodeCoverageTargets>
       <Testables>
          <TestableReference

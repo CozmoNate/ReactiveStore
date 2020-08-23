@@ -43,6 +43,7 @@ class ReactiveStoreTests: QuickSpec {
             }
             
             context("when executing synchronous action") {
+                
                 beforeEach {
                     subject.execute(MockStore.Action.Change(value: "sync test"), completion: {})
                 }

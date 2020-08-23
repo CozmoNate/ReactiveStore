@@ -33,7 +33,7 @@ import Foundation
 public protocol ReactiveStore: AnyObject {
     
     /// A store handler closure. Handler applies changes to the store and returns the list of changed fields.
-    /// **Important** You must call *completion* closure in your action handler block, to notify the store that the action is finished executing.
+    /// **Important** You must call *completion* closure in your action handler block to notify the store that the action is finished executing.
     typealias ActionHandler<Action> = (_ store: Self, _ action: Action, _ completion: @escaping () -> Void) -> Void
     
     /// The list of type-erased closures associated with specific action types.

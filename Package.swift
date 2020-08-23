@@ -24,7 +24,7 @@ let package = Package(
                 sources: ["ReactiveStore.swift"]),
         .target(name: "ReactiveStoreObserving",
                 dependencies: ["ReactiveStore"],
-                path: "ReactiveStore",
+                path: "ReactiveStoreObserving",
                 sources: ["ReactiveStoreObserving.swift"]),
     ],
     swiftLanguageVersions: [ .v5 ]

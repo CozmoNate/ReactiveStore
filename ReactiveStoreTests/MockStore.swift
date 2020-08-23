@@ -9,6 +9,7 @@
 import Foundation
 
 @testable import ReactiveStore
+@testable import ReactiveStoreObserving
 
 class MockStore: ReactiveStore {
     

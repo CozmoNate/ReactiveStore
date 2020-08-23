@@ -28,6 +28,7 @@
 */
 
 import Foundation
+import ReactiveStore
 
 public let ReactiveStoreDidChangeNotification = Notification.Name("ReactiveStoreDidChange")
 public let ReactiveStoreKeyPathsKey = "keyPaths"

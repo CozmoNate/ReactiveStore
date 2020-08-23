@@ -10,6 +10,7 @@ import Quick
 import Nimble
 
 @testable import ReactiveStore
+@testable import ReactiveStoreObserving
 
 extension ReactiveStoreQueue {
     

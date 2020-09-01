@@ -14,9 +14,9 @@
 		2F07612724E7FCDE00A91409 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2F07612624E7FCDE00A91409 /* README.md */; };
 		2F07612924E7FCE300A91409 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 2F07612824E7FCE300A91409 /* LICENSE */; };
 		2F07613F24E8042400A91409 /* ReactiveStore.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 2F07613E24E8042400A91409 /* ReactiveStore.podspec */; };
-		2F07614824E806D600A91409 /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = 2F07614724E806D600A91409 /* Quick */; };
-		2F07614B24E806EE00A91409 /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = 2F07614A24E806EE00A91409 /* Nimble */; };
 		2F07615D24EAB82100A91409 /* MockStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F07615C24EAB82100A91409 /* MockStore.swift */; };
+		2F58255924FEBCC100EE543D /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = 2F58255824FEBCC100EE543D /* Quick */; };
+		2F58255C24FEBCD700EE543D /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = 2F58255B24FEBCD700EE543D /* Nimble */; };
 		2F5DF88824F234AE002079AA /* ReactiveStoreObserving.h in Headers */ = {isa = PBXBuildFile; fileRef = 2F5DF87A24F234AE002079AA /* ReactiveStoreObserving.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2F5DF89124F234BE002079AA /* ReactiveStoreObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F07612C24E7FD8600A91409 /* ReactiveStoreObserving.swift */; };
 /* End PBXBuildFile section */
@@ -76,8 +76,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2F07614B24E806EE00A91409 /* Nimble in Frameworks */,
-				2F07614824E806D600A91409 /* Quick in Frameworks */,
+				2F58255C24FEBCD700EE543D /* Nimble in Frameworks */,
+				2F58255924FEBCC100EE543D /* Quick in Frameworks */,
 				2F07611424E7FC0500A91409 /* ReactiveStore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -202,8 +202,8 @@
 			);
 			name = ReactiveStoreTests;
 			packageProductDependencies = (
-				2F07614724E806D600A91409 /* Quick */,
-				2F07614A24E806EE00A91409 /* Nimble */,
+				2F58255824FEBCC100EE543D /* Quick */,
+				2F58255B24FEBCD700EE543D /* Nimble */,
 			);
 			productName = ReactiveStoreTests;
 			productReference = 2F07611324E7FC0500A91409 /* ReactiveStoreTests.xctest */;
@@ -260,8 +260,8 @@
 			);
 			mainGroup = 2F07610024E7FC0500A91409;
 			packageReferences = (
-				2F07614624E806D600A91409 /* XCRemoteSwiftPackageReference "Quick" */,
-				2F07614924E806EE00A91409 /* XCRemoteSwiftPackageReference "Nimble" */,
+				2F58255724FEBCC100EE543D /* XCRemoteSwiftPackageReference "Quick" */,
+				2F58255A24FEBCD700EE543D /* XCRemoteSwiftPackageReference "Nimble" */,
 			);
 			productRefGroup = 2F07610B24E7FC0500A91409 /* Products */;
 			projectDirPath = "";
@@ -651,33 +651,33 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		2F07614624E806D600A91409 /* XCRemoteSwiftPackageReference "Quick" */ = {
+		2F58255724FEBCC100EE543D /* XCRemoteSwiftPackageReference "Quick" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Quick/Quick.git";
 			requirement = {
-				branch = master;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
 			};
 		};
-		2F07614924E806EE00A91409 /* XCRemoteSwiftPackageReference "Nimble" */ = {
+		2F58255A24FEBCD700EE543D /* XCRemoteSwiftPackageReference "Nimble" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Quick/Nimble.git";
 			requirement = {
-				branch = master;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.1.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		2F07614724E806D600A91409 /* Quick */ = {
+		2F58255824FEBCC100EE543D /* Quick */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 2F07614624E806D600A91409 /* XCRemoteSwiftPackageReference "Quick" */;
+			package = 2F58255724FEBCC100EE543D /* XCRemoteSwiftPackageReference "Quick" */;
 			productName = Quick;
 		};
-		2F07614A24E806EE00A91409 /* Nimble */ = {
+		2F58255B24FEBCD700EE543D /* Nimble */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 2F07614924E806EE00A91409 /* XCRemoteSwiftPackageReference "Nimble" */;
+			package = 2F58255A24FEBCD700EE543D /* XCRemoteSwiftPackageReference "Nimble" */;
 			productName = Nimble;
 		};
 /* End XCSwiftPackageProductDependency section */

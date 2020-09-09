@@ -40,7 +40,7 @@ public protocol ReactiveStore: AnyObject {
     var actionHandlers: [ObjectIdentifier: Any] { get set }
     
     /// The queue of postponed actions.
-    var actionQueue: ReactiveStoreQueue { get }
+    var actionQueue: SerialActionQueue { get }
     
     /// The flag indicating if the store dispatches an action at the moment.
     var isDispatching: Bool { get set }
@@ -77,13 +77,43 @@ public extension ReactiveStore {
         let actionBlock: () -> Void = { [weak self] in
             self?.execute(action) { self?.flush() }
         }
-
         if isDispatching {
             actionQueue.enqueue(actionBlock)
         } else {
             isDispatching = true
             actionBlock()
         }
+    }
+}
+
+public extension ReactiveStore {
+    
+    /// Asynchronously dispatches the action on specified queue using barrier flag (serially). If already running on the specified queue, dispatches the action synchronously.
+    /// - Parameters:
+    ///   - action: The action to dispatch.
+    ///   - queue: The queue to dispatch action on.
+    func dispatch<Action>(_ action: Action, on queue: DispatchQueue) {
+        if DispatchQueue.isRunning(on: queue) {
+            dispatch(action)
+        } else {
+            queue.async(flags: .barrier) {
+                self.dispatch(action)
+            }
+        }
+    }
+}
+
+internal let ReactiveStoreQueueIdentifierKey = DispatchSpecificKey<UUID>()
+
+internal extension DispatchQueue {
+    
+    static func isRunning(on queue: DispatchQueue) -> Bool {
+        var identifier: UUID! = queue.getSpecific(key: ReactiveStoreQueueIdentifierKey)
+        if identifier == nil {
+            identifier = UUID()
+            queue.setSpecific(key: ReactiveStoreQueueIdentifierKey, value: identifier)
+        }
+        return DispatchQueue.getSpecific(key: ReactiveStoreQueueIdentifierKey) == identifier
     }
 }
 
@@ -107,49 +137,5 @@ internal extension ReactiveStore {
         } else {
             isDispatching = false
         }
-    }
-}
-
-public class ReactiveStoreQueue {
-    public typealias Action = () -> Void
-    
-    internal class Item {
-        let action: Action
-        var next: Item?
-        
-        init(_ action: @escaping Action) {
-            self.action = action
-        }
-    }
-
-    public var isEmpty: Bool {
-        return head == nil
-    }
-    
-    internal var head: Item? {
-        didSet { if head == nil { tail = nil } }
-    }
-    
-    internal var tail: Item?
-    
-    public init() {}
-    
-    public func enqueue(_ action: @escaping Action) {
-        let item = Item(action)
-        if let last = tail {
-            last.next = item
-            tail = item
-        } else {
-            head = item
-            tail = head
-        }
-    }
-    
-    public func dequeue() -> Action? {
-        guard let first = head else {
-            return nil
-        }
-        head = first.next
-        return first.action
     }
 }

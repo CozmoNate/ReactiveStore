@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'ReactiveStore'
-  s.version          = '1.3.2'
+  s.version          = '1.3.3'
   s.summary          = 'Simple reactive store implementation for state management written in Swift.'
   s.homepage         = 'https://github.com/kzlekk/ReactiveStore'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
@@ -14,15 +14,13 @@ Pod::Spec.new do |s|
   s.watchos.deployment_target = '3.0'
   s.tvos.deployment_target = '10.0'
 
-  s.source_files = 'ReactiveStore/*.swift'
-  
   s.subspec 'Core' do |cs|
-    cs.source_files = 'ReactiveStore/ReactiveStore.swift'
+    cs.source_files = 'ReactiveStore/*.swift'
   end
 
   s.subspec 'Observing' do |cs|
     cs.dependency 'ReactiveStore/Core'
-    cs.source_files = 'ReactiveStoreObserving/ReactiveStoreObserving.swift'
+    cs.source_files = 'ReactiveStoreObserving/*.swift'
   end
 
   s.default_subspec = 'Core'

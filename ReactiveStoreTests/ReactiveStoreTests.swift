@@ -12,7 +12,7 @@ import Nimble
 @testable import ReactiveStore
 @testable import ReactiveStoreObserving
 
-extension ReactiveStoreQueue {
+extension SerialActionQueue {
     
     var count: Int {
         guard var item = head else {
@@ -162,6 +162,41 @@ class ReactiveStoreTests: QuickSpec {
                     it("does not notify subscribers") {
                         expect(changed).to(beNil())
                         expect(subject.value).to(equal("test unsubscribe"))
+                    }
+                }
+            }
+            
+            describe("Dispatch") {
+
+                var queue: DispatchQueue!
+
+                beforeEach {
+                    queue = DispatchQueue(label: "Test", qos: .background)
+                }
+                
+                context("when dispatched action on queue") {
+
+                    beforeEach {
+                        subject.dispatch(MockStore.Action.Change(value: "queue test"), on: queue)
+                    }
+
+                    it("performs action") {
+                        expect(subject.value).toEventually(equal("queue test"))
+                        expect(subject.lastQueueIdentifier).toEventually(equal(queue.getSpecific(key: ReactiveStoreQueueIdentifierKey)))
+                    }
+                }
+                
+                context("when dispatched action from another queue") {
+
+                    beforeEach {
+                        DispatchQueue.main.async {
+                            subject.dispatch(MockStore.Action.Change(value: "another queue test"), on: queue)
+                        }
+                    }
+
+                    it("performs action") {
+                        expect(subject.value).toEventually(equal("another queue test"))
+                        expect(subject.lastQueueIdentifier).toEventually(equal(queue.getSpecific(key: ReactiveStoreQueueIdentifierKey)))
                     }
                 }
             }

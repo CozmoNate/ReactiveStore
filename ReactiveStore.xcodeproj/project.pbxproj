@@ -19,6 +19,7 @@
 		2F58255C24FEBCD700EE543D /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = 2F58255B24FEBCD700EE543D /* Nimble */; };
 		2F5DF88824F234AE002079AA /* ReactiveStoreObserving.h in Headers */ = {isa = PBXBuildFile; fileRef = 2F5DF87A24F234AE002079AA /* ReactiveStoreObserving.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2F5DF89124F234BE002079AA /* ReactiveStoreObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F07612C24E7FD8600A91409 /* ReactiveStoreObserving.swift */; };
+		AA32E5DB25092642004EF482 /* SerialActionQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA32E5DA25092642004EF482 /* SerialActionQueue.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +63,7 @@
 		2F5DF87824F234AE002079AA /* ReactiveStoreObserving.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ReactiveStoreObserving.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F5DF87A24F234AE002079AA /* ReactiveStoreObserving.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReactiveStoreObserving.h; sourceTree = "<group>"; };
 		2F5DF87B24F234AE002079AA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AA32E5DA25092642004EF482 /* SerialActionQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialActionQueue.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +123,7 @@
 			children = (
 				2F07610D24E7FC0500A91409 /* ReactiveStore.h */,
 				2F07612424E7FC1400A91409 /* ReactiveStore.swift */,
+				AA32E5DA25092642004EF482 /* SerialActionQueue.swift */,
 				2F07610E24E7FC0500A91409 /* Info.plist */,
 			);
 			path = ReactiveStore;
@@ -306,6 +309,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA32E5DB25092642004EF482 /* SerialActionQueue.swift in Sources */,
 				2F07612524E7FC1400A91409 /* ReactiveStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

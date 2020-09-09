@@ -30,13 +30,16 @@ class MockStore: ReactiveStore {
     private(set) var value = "initial"
     private(set) var number = 0
     
+    var lastQueueIdentifier: UUID!
+    
     var actionHandlers = [ObjectIdentifier: Any]()
-    var actionQueue = ReactiveStoreQueue()
+    var actionQueue = SerialActionQueue()
 
     var isDispatching = false
     
     init() {
         register(Action.Change.self) { (store, action, done) in
+            store.lastQueueIdentifier = DispatchQueue.getSpecific(key: ReactiveStoreQueueIdentifierKey)
             store.value = action.value
             store.notify(keyPathsChanged: [\MockStore.value])
             done()

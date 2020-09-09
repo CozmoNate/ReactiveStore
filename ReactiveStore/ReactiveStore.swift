@@ -73,9 +73,13 @@ public extension ReactiveStore {
     /// Actions from queue are executed serially in FIFO order, right after the previous action finishes dispatching.
     /// - Parameters:
     ///   - action: The type of the actions to associate with the handler.
-    func dispatch<Action>(_ action: Action) {
+    //    - completion: The block that will be invoked right after the action is finished executing.
+    func dispatch<Action>(_ action: Action, _ completion: (() -> Void)? = nil) {
         let actionBlock: () -> Void = { [weak self] in
-            self?.execute(action) { self?.flush() }
+            self?.execute(action) {
+                completion?()
+                self?.flush()
+            }
         }
         if isDispatching {
             actionQueue.enqueue(actionBlock)
@@ -92,12 +96,13 @@ public extension ReactiveStore {
     /// - Parameters:
     ///   - action: The action to dispatch.
     ///   - queue: The queue to dispatch action on.
-    func dispatch<Action>(_ action: Action, on queue: DispatchQueue) {
+    //    - completion: The block that will be invoked right after the action is finished executing.
+    func dispatch<Action>(_ action: Action, on queue: DispatchQueue, completion: (() -> Void)? = nil) {
         if DispatchQueue.isRunning(on: queue) {
-            dispatch(action)
+            dispatch(action, completion)
         } else {
             queue.async(flags: .barrier) {
-                self.dispatch(action)
+                self.dispatch(action, completion)
             }
         }
     }

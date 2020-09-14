@@ -69,4 +69,8 @@ public class SerialActionQueue {
         head = first.next
         return first.action
     }
+    
+    public func clear() {
+        head = nil
+    }
 }

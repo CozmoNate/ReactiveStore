@@ -38,11 +38,10 @@ class MockStore: ReactiveStore {
     var isDispatching = false
     
     init() {
-        register(Action.Change.self) { (store, action, done) in
+        register(Action.Change.self) { (store, action) in
             store.lastQueueIdentifier = DispatchQueue.getSpecific(key: ReactiveStoreQueueIdentifierKey)
             store.value = action.value
             store.notify(keyPathsChanged: [\MockStore.value])
-            done()
         }
         
         register(Action.AsyncChange.self) { (store, action, done) in
@@ -53,10 +52,9 @@ class MockStore: ReactiveStore {
             }
         }
         
-        register(Action.Update.self) { (store, action, done) in
+        register(Action.Update.self) { (store, action) in
             store.number = action.number
             store.notify(keyPathsChanged: [\MockStore.number])
-            done()
         }
     }
 }

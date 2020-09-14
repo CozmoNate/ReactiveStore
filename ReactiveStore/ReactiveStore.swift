@@ -49,7 +49,8 @@ public protocol ReactiveStore: AnyObject {
 
 public extension ReactiveStore {
     
-    /// Associates a handler with actions of the specified type.
+    /// Associates a handler with the action of specified type.
+    /// You must call 3rd parameter of the action handler closure when the action is finished executing to avoid action queue lock.
     /// - Parameters:
     ///   - action: The type of the actions to associate with the handler.
     ///   - execute: The handler closure that will be invoked when the action received.
@@ -57,6 +58,17 @@ public extension ReactiveStore {
         actionHandlers.updateValue(handler, forKey: ObjectIdentifier(Action.self))
     }
     
+    /// Associates synchronous action handler with the action of specified type.
+    /// - Parameters:
+    ///   - action: The type of the actions to associate with the handler.
+    ///   - execute: The handler closure that will be invoked when the action received.
+    func register<Action>(_ action: Action.Type, handler: @escaping (_ store: Self, _ action: Action) -> Void) {
+        register(action) { (store, action, finish) in
+            handler(store, action)
+            finish()
+        }
+    }
+
     /// Unregisters handler associated with actions of the specified type.
     /// - Parameter action: The action for which the associated handler should be removed.
     func unregister<Action>(_ action: Action.Type) {

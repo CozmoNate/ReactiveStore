@@ -74,7 +74,7 @@ public extension ReactiveStore {
     /// - Parameters:
     ///   - action: The type of the actions to associate with the handler.
     //    - completion: The block that will be invoked right after the action is finished executing.
-    func dispatch<Action>(_ action: Action, _ completion: (() -> Void)? = nil) {
+    func dispatch<Action>(_ action: Action, completion: (() -> Void)? = nil) {
         let actionBlock: () -> Void = { [weak self] in
             self?.execute(action) {
                 completion?()
@@ -99,10 +99,10 @@ public extension ReactiveStore {
     //    - completion: The block that will be invoked right after the action is finished executing.
     func dispatch<Action>(_ action: Action, on queue: DispatchQueue, completion: (() -> Void)? = nil) {
         if DispatchQueue.isRunning(on: queue) {
-            dispatch(action, completion)
+            dispatch(action, completion: completion)
         } else {
             queue.async(flags: .barrier) {
-                self.dispatch(action, completion)
+                self.dispatch(action, completion: completion)
             }
         }
     }

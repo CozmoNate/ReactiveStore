@@ -108,13 +108,13 @@ public extension ReactiveStore {
     /// Use "execute" to apply an action immediately inside async "dispatched" action without locking the queue.
     ///
     /// - Parameter action: The action to execute.
-    func execute<Action>(_ action: Action, completion: @escaping () -> Void) {
+    func execute<Action>(_ action: Action, completion: (() -> Void)? = nil) {
         guard let handle = actionHandlers[ObjectIdentifier(Action.self)] as? ActionHandler<Action> else {
-            completion()
+            completion?()
             return
         }
         
-        handle(self, action, completion)
+        handle(self, action, { completion?() })
     }
     
     /// Asynchronously dispatches the action on specified queue using barrier flag (serially). If already running on the specified queue, dispatches the action synchronously.

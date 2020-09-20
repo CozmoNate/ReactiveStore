@@ -104,6 +104,19 @@ public extension ReactiveStore {
 
 public extension ReactiveStore {
     
+    /// Unconditionally executes the action on current queue. NOTE: It is not recommended to execute actions directly.
+    /// Use "execute" to apply an action immediately inside async "dispatched" action without locking the queue.
+    ///
+    /// - Parameter action: The action to execute.
+    func execute<Action>(_ action: Action, completion: @escaping () -> Void) {
+        guard let handle = actionHandlers[ObjectIdentifier(Action.self)] as? ActionHandler<Action> else {
+            completion()
+            return
+        }
+        
+        handle(self, action, completion)
+    }
+    
     /// Asynchronously dispatches the action on specified queue using barrier flag (serially). If already running on the specified queue, dispatches the action synchronously.
     /// - Parameters:
     ///   - action: The action to dispatch.
@@ -135,18 +148,7 @@ internal extension DispatchQueue {
 }
 
 internal extension ReactiveStore {
-    
-    /// Executes the action immediately.
-    /// - Parameter action: The action to execute.
-    func execute<Action>(_ action: Action, completion: @escaping () -> Void) {
-        guard let handle = actionHandlers[ObjectIdentifier(Action.self)] as? ActionHandler<Action> else {
-            completion()
-            return
-        }
-        
-        handle(self, action, completion)
-    }
-    
+
     /// Executes the actions from the queue.
     func flush() {
         if let nextAction = actionQueue.dequeue() {

@@ -49,6 +49,7 @@ public extension ReactiveStore {
     /// - Parameter changeHandler: The closure will be invoked each time the store changes.
     func addObserver(queue: OperationQueue = .main,
                      handler: @escaping (Self, Set<PartialKeyPath<Self>>) -> Void) -> ReactiveStoreSubscription {
+        defer { handler(self, [\Self.self]) }
         return ReactiveStoreSubscription(store: self, queue: queue, handler: handler)
     }
     
@@ -59,6 +60,7 @@ public extension ReactiveStore {
     func addObserver(for keyPaths: [PartialKeyPath<Self>],
                      queue: OperationQueue = .main,
                      handler: @escaping (Self) -> Void) -> ReactiveStoreSubscription {
+        defer { handler(self) }
         return ReactiveStoreSubscription(store: self, queue: queue) { state, changedKeyPaths in
             if !changedKeyPaths.isDisjoint(with: keyPaths) {
                 handler(self)

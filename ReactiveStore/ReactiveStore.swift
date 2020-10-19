@@ -42,6 +42,8 @@ public protocol ReactiveStore: AnyObject {
     /// The queue of postponed actions.
     var actionQueue: SerialActionQueue { get }
     
+    var middlewares: [Middleware] { get }
+    
     /// The flag indicating if the store dispatches an action at the moment.
     var isDispatching: Bool { get set }
     
@@ -114,7 +116,11 @@ public extension ReactiveStore {
             return
         }
         
+        middlewares.forEach { $0.store(self, willExecute: action) }
+        
         handle(self, action, { completion?() })
+        
+        middlewares.forEach { $0.store(self, didExecute: action) }
     }
     
     /// Asynchronously dispatches the action on specified queue using barrier flag (serially). If already running on the specified queue, dispatches the action synchronously.

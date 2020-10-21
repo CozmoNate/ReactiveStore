@@ -42,6 +42,7 @@ public protocol ReactiveStore: AnyObject {
     /// The queue of postponed actions.
     var actionQueue: SerialActionQueue { get }
     
+    /// The list of objects that are conforming to Middleware protocol and receive events about all executed actions
     var middlewares: [Middleware] { get }
     
     /// The flag indicating if the store dispatches an action at the moment.
@@ -116,7 +117,15 @@ public extension ReactiveStore {
             return
         }
         
-        middlewares.forEach { $0.store(self, willExecute: action) }
+        let shouldExecute = middlewares.reduce(into: true) { (result, middleware) in
+            guard result else { return }
+            result = middleware.store(self, shouldExecute: action)
+        }
+        
+        guard shouldExecute else {
+            completion?()
+            return
+        }
         
         handle(self, action, { completion?() })
         

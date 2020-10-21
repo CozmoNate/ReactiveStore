@@ -10,6 +10,16 @@ import Foundation
 
 public protocol Middleware {
     
-    func store<Store, Action>(_ store: Store, willExecute action: Action)
-    func store<Store, Action>(_ store: Store, didExecute action: Action)
+    /// This method is called by the store before executing the action
+    /// - Parameters:
+    ///   - store: The store that would execute the action
+    ///   - action: The action that should be executed
+    func store<Store: ReactiveStore, Action>(_ store: Store, shouldExecute action: Action) -> Bool
+    
+    
+    /// This method is called by the store after the action is executed
+    /// - Parameters:
+    ///   - store: The store that executed the action
+    ///   - action: The action that has been executed
+    func store<Store: ReactiveStore, Action>(_ store: Store, didExecute action: Action)
 }

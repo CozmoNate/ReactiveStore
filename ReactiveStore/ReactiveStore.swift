@@ -127,9 +127,10 @@ public extension ReactiveStore {
             return
         }
         
-        handle(self, action, { completion?() })
-        
-        middlewares.forEach { $0.store(self, didExecute: action) }
+        handle(self, action, {
+            self.middlewares.forEach { $0.store(self, didExecute: action) }
+            completion?()
+        })
     }
     
     /// Asynchronously dispatches the action on specified queue using barrier flag (serially). If already running on the specified queue, dispatches the action synchronously.

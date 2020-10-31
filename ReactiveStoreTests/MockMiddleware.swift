@@ -10,7 +10,7 @@ import Foundation
 
 @testable import ReactiveStore
 
-class MockMiddleware: Middleware {
+class MockMiddleware: ReactiveMiddleware {
     
     var shouldExecute = true
     var lastExecutedStore: ReactiveStore?

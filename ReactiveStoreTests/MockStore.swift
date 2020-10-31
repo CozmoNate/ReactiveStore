@@ -34,7 +34,7 @@ class MockStore: ReactiveStore {
     
     var actionHandlers = [ObjectIdentifier: Any]()
     var actionQueue = SerialActionQueue()
-    var middlewares = Array<Middleware>([MockMiddleware()])
+    var middlewares = Array<ReactiveMiddleware>([MockMiddleware()])
     var isDispatching = false
     
     init() {

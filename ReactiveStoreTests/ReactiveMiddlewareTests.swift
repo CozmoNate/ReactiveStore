@@ -13,7 +13,7 @@ import Nimble
 
 class MiddlewareTests: QuickSpec {
     override func spec() {
-        describe("Middleware") {
+        describe("ReactiveMiddleware") {
             
             var store: MockStore!
             var subject: MockMiddleware!

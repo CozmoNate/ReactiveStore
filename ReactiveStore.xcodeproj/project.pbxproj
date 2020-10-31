@@ -20,9 +20,9 @@
 		2F5DF88824F234AE002079AA /* ReactiveStoreObserving.h in Headers */ = {isa = PBXBuildFile; fileRef = 2F5DF87A24F234AE002079AA /* ReactiveStoreObserving.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2F5DF89124F234BE002079AA /* ReactiveStoreObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F07612C24E7FD8600A91409 /* ReactiveStoreObserving.swift */; };
 		AA32E5DB25092642004EF482 /* SerialActionQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA32E5DA25092642004EF482 /* SerialActionQueue.swift */; };
-		AA6F92ED253DCFF000A530F4 /* Middleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6F92EC253DCFF000A530F4 /* Middleware.swift */; };
+		AA6F92ED253DCFF000A530F4 /* ReactiveMiddleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6F92EC253DCFF000A530F4 /* ReactiveMiddleware.swift */; };
 		AAD269762540464600DA4028 /* MockMiddleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD269752540464600DA4028 /* MockMiddleware.swift */; };
-		AAD2697B2540470200DA4028 /* MiddlewareTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD2697A2540470200DA4028 /* MiddlewareTests.swift */; };
+		AAD2697B2540470200DA4028 /* ReactiveMiddlewareTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD2697A2540470200DA4028 /* ReactiveMiddlewareTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,9 +67,9 @@
 		2F5DF87A24F234AE002079AA /* ReactiveStoreObserving.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReactiveStoreObserving.h; sourceTree = "<group>"; };
 		2F5DF87B24F234AE002079AA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AA32E5DA25092642004EF482 /* SerialActionQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialActionQueue.swift; sourceTree = "<group>"; };
-		AA6F92EC253DCFF000A530F4 /* Middleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Middleware.swift; sourceTree = "<group>"; };
+		AA6F92EC253DCFF000A530F4 /* ReactiveMiddleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactiveMiddleware.swift; sourceTree = "<group>"; };
 		AAD269752540464600DA4028 /* MockMiddleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockMiddleware.swift; sourceTree = "<group>"; };
-		AAD2697A2540470200DA4028 /* MiddlewareTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiddlewareTests.swift; sourceTree = "<group>"; };
+		AAD2697A2540470200DA4028 /* ReactiveMiddlewareTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactiveMiddlewareTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,7 +129,7 @@
 			children = (
 				2F07610D24E7FC0500A91409 /* ReactiveStore.h */,
 				2F07612424E7FC1400A91409 /* ReactiveStore.swift */,
-				AA6F92EC253DCFF000A530F4 /* Middleware.swift */,
+				AA6F92EC253DCFF000A530F4 /* ReactiveMiddleware.swift */,
 				AA32E5DA25092642004EF482 /* SerialActionQueue.swift */,
 				2F07610E24E7FC0500A91409 /* Info.plist */,
 			);
@@ -142,7 +142,7 @@
 				2F07615C24EAB82100A91409 /* MockStore.swift */,
 				AAD269752540464600DA4028 /* MockMiddleware.swift */,
 				2F07611824E7FC0500A91409 /* ReactiveStoreTests.swift */,
-				AAD2697A2540470200DA4028 /* MiddlewareTests.swift */,
+				AAD2697A2540470200DA4028 /* ReactiveMiddlewareTests.swift */,
 				2F07611A24E7FC0500A91409 /* Info.plist */,
 			);
 			path = ReactiveStoreTests;
@@ -318,7 +318,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA6F92ED253DCFF000A530F4 /* Middleware.swift in Sources */,
+				AA6F92ED253DCFF000A530F4 /* ReactiveMiddleware.swift in Sources */,
 				AA32E5DB25092642004EF482 /* SerialActionQueue.swift in Sources */,
 				2F07612524E7FC1400A91409 /* ReactiveStore.swift in Sources */,
 			);
@@ -329,7 +329,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2F07611924E7FC0500A91409 /* ReactiveStoreTests.swift in Sources */,
-				AAD2697B2540470200DA4028 /* MiddlewareTests.swift in Sources */,
+				AAD2697B2540470200DA4028 /* ReactiveMiddlewareTests.swift in Sources */,
 				AAD269762540464600DA4028 /* MockMiddleware.swift in Sources */,
 				2F07615D24EAB82100A91409 /* MockStore.swift in Sources */,
 			);

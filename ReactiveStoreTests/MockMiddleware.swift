@@ -10,21 +10,21 @@ import Foundation
 
 @testable import ReactiveStore
 
-class MockMiddleware: ReactiveMiddleware {
+class MockMiddleware: Middleware {
     
     var shouldExecute = true
-    var lastExecutedStore: ReactiveStore?
+    var lastExecutedStore: Store?
     var lastExecutedAction: Any?
     var lastAskedAction: Any?
-    var lastAskedStore: ReactiveStore?
+    var lastAskedStore: Store?
     
-    func store<Store, Action>(_ store: Store, shouldExecute action: Action) -> Bool where Store : ReactiveStore {
+    func store<Store, Action: ReactiveStore.Action>(_ store: Store, shouldExecute action: Action) -> Bool where Action.Store == Store {
         lastAskedStore = store
         lastAskedAction = action
         return shouldExecute
     }
     
-    func store<Store, Action>(_ store: Store, didExecute action: Action) where Store : ReactiveStore {
+    func store<Store, Action: ReactiveStore.Action>(_ store: Store, didExecute action: Action) where Action.Store == Store {
         lastExecutedStore = store
         lastExecutedAction = action
     }

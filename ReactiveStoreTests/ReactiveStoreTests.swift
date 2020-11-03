@@ -12,7 +12,7 @@ import Nimble
 @testable import ReactiveStore
 @testable import ReactiveStoreObserving
 
-extension SerialActionQueue {
+extension ActionQueue {
     
     var count: Int {
         guard var item = head else {
@@ -30,16 +30,11 @@ extension SerialActionQueue {
 
 class ReactiveStoreTests: QuickSpec {
     override func spec() {
-        describe("ReactiveStore") {
+        describe("Store") {
             var subject: MockStore!
             
             beforeEach {
                 subject = MockStore()
-            }
-            
-            it("registered an action correctly") {
-                let handler = subject.actionHandlers[ObjectIdentifier(MockStore.Action.Change.self)] as? MockStore.ActionHandler<MockStore.Action.Change>
-                expect(handler).toNot(beNil())
             }
             
             context("when executing synchronous action") {
@@ -82,30 +77,8 @@ class ReactiveStoreTests: QuickSpec {
                 }
             }
             
-            context("when unregistered specific action") {
-                beforeEach {
-                    subject.unregister(MockStore.Action.Change.self)
-                    subject.execute(MockStore.Action.Change(value: "test test"), completion: {})
-                }
-                
-                it("does not handle unregistered action") {
-                    expect(subject.actionHandlers.count).to(equal(2))
-                    expect(subject.value).to(equal("initial"))
-                }
-            }
-            
-            context("when unregistered all actions") {
-                beforeEach {
-                    subject.unregisterAll()
-                }
-                
-                it("has no registered actions") {
-                    expect(subject.actionHandlers).to(beEmpty())
-                }
-            }
-            
             context("when subscribed to changes and executed action") {
-                var subscriptions: [ReactiveStoreSubscription]!
+                var subscriptions: [Subscription]!
                 var keyPaths: Set<PartialKeyPath<MockStore>>?
                 
                 beforeEach {
@@ -136,7 +109,7 @@ class ReactiveStoreTests: QuickSpec {
             }
             
             context("when subscribed to SPECIFIC changes and executed action") {
-                var subscriptions: [ReactiveStoreSubscription]!
+                var subscriptions: [Subscription]!
                 var changed: Bool?
                 
                 beforeEach {

@@ -1,5 +1,5 @@
 //
-//  ReactiveMiddleware.swift
+//  Middleware.swift
 //
 //  Copyright © 2020 Natan Zalkin. All rights reserved.
 //
@@ -29,18 +29,18 @@
 
 import Foundation
 
-public protocol ReactiveMiddleware {
+public protocol Middleware {
     
     /// This method is called by the store before executing the action
     /// - Parameters:
     ///   - store: The store that would execute the action
     ///   - action: The action that should be executed
-    func store<Store: ReactiveStore, Action>(_ store: Store, shouldExecute action: Action) -> Bool
+    func store<S, A: Action>(_ store: S, shouldExecute action: A) -> Bool where A.Store == S
     
     
     /// This method is called by the store after the action is executed
     /// - Parameters:
     ///   - store: The store that executed the action
     ///   - action: The action that has been executed
-    func store<Store: ReactiveStore, Action>(_ store: Store, didExecute action: Action)
+    func store<S, A: Action>(_ store: S, didExecute action: A) where A.Store == S
 }

@@ -1,5 +1,5 @@
 //
-//  ExecutableAction.swift
+//  ApplicableAction.swift
 //
 //  Copyright © 2020 Natan Zalkin. All rights reserved.
 //
@@ -29,10 +29,17 @@
 
 import Foundation
 
-public protocol ExecutableAction {
+public protocol ApplicableAction: ExecutableAction {
     
-    associatedtype Scheduler
+    associatedtype Store
     
-    func execute(on scheduler: Scheduler, completion: @escaping () -> Void)
+    func apply(on store: Store)
 }
 
+public extension ApplicableAction where Store == Scheduler {
+    
+    func execute(on store: Store, completion: @escaping () -> Void) {
+        apply(on: store)
+        completion()
+    }
+}

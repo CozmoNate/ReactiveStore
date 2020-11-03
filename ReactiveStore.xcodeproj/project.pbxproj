@@ -21,6 +21,7 @@
 		2F5DF89124F234BE002079AA /* ReactiveStoreSubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F07612C24E7FD8600A91409 /* ReactiveStoreSubscription.swift */; };
 		AA32E5DB25092642004EF482 /* ActionQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA32E5DA25092642004EF482 /* ActionQueue.swift */; };
 		AA6F92ED253DCFF000A530F4 /* InterceptingMiddleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6F92EC253DCFF000A530F4 /* InterceptingMiddleware.swift */; };
+		AAD1001E25516DBA003B3174 /* ApplicableAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD1001D25516DBA003B3174 /* ApplicableAction.swift */; };
 		AAD1FFDA25513635003B3174 /* ExecutableAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD1FFD925513635003B3174 /* ExecutableAction.swift */; };
 		AAD269762540464600DA4028 /* MockMiddleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD269752540464600DA4028 /* MockMiddleware.swift */; };
 		AAD2697B2540470200DA4028 /* ReactiveMiddlewareTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD2697A2540470200DA4028 /* ReactiveMiddlewareTests.swift */; };
@@ -69,6 +70,7 @@
 		2F5DF87B24F234AE002079AA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AA32E5DA25092642004EF482 /* ActionQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionQueue.swift; sourceTree = "<group>"; };
 		AA6F92EC253DCFF000A530F4 /* InterceptingMiddleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterceptingMiddleware.swift; sourceTree = "<group>"; };
+		AAD1001D25516DBA003B3174 /* ApplicableAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicableAction.swift; sourceTree = "<group>"; };
 		AAD1FFD925513635003B3174 /* ExecutableAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExecutableAction.swift; sourceTree = "<group>"; };
 		AAD269752540464600DA4028 /* MockMiddleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockMiddleware.swift; sourceTree = "<group>"; };
 		AAD2697A2540470200DA4028 /* ReactiveMiddlewareTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactiveMiddlewareTests.swift; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 			children = (
 				2F07610D24E7FC0500A91409 /* ReactiveStore.h */,
 				AAD1FFD925513635003B3174 /* ExecutableAction.swift */,
+				AAD1001D25516DBA003B3174 /* ApplicableAction.swift */,
 				AA6F92EC253DCFF000A530F4 /* InterceptingMiddleware.swift */,
 				2F07612424E7FC1400A91409 /* ReactiveStore.swift */,
 				AA32E5DA25092642004EF482 /* ActionQueue.swift */,
@@ -321,6 +324,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AAD1001E25516DBA003B3174 /* ApplicableAction.swift in Sources */,
 				AA6F92ED253DCFF000A530F4 /* InterceptingMiddleware.swift in Sources */,
 				AAD1FFDA25513635003B3174 /* ExecutableAction.swift in Sources */,
 				AA32E5DB25092642004EF482 /* ActionQueue.swift in Sources */,

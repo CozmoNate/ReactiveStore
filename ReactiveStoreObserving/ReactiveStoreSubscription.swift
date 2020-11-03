@@ -33,7 +33,7 @@ import ReactiveStore
 public let ReactiveStoreDidChangeNotification = Notification.Name("ReactiveStoreDidChange")
 public let ReactiveStoreKeyPathsKey = "keyPaths"
 
-public extension Store {
+public extension ReactiveStore {
 
     /// Notify observers about changed properties.
     func notify(keyPathsChanged: Set<PartialKeyPath<Self>>) {
@@ -48,9 +48,9 @@ public extension Store {
     /// - Parameter queue: The queue to schedule change handler on.
     /// - Parameter changeHandler: The closure will be invoked each time the store changes.
     func addObserver(queue: OperationQueue = .main,
-                     handler: @escaping (Self, Set<PartialKeyPath<Self>>) -> Void) -> Subscription {
+                     handler: @escaping (Self, Set<PartialKeyPath<Self>>) -> Void) -> ReactiveStoreSubscription {
         defer { handler(self, [\Self.self]) }
-        return Subscription(store: self, queue: queue, handler: handler)
+        return ReactiveStoreSubscription(store: self, queue: queue, handler: handler)
     }
     
     /// Adds an observer that will be invoked each time the store changes.
@@ -59,9 +59,9 @@ public extension Store {
     /// - Parameter handler: The closure will be invoked each time the store changes fields included in observingKeyPaths param.
     func addObserver(for keyPaths: [PartialKeyPath<Self>],
                      queue: OperationQueue = .main,
-                     handler: @escaping (Self) -> Void) -> Subscription {
+                     handler: @escaping (Self) -> Void) -> ReactiveStoreSubscription {
         defer { handler(self) }
-        return Subscription(store: self, queue: queue) { state, changedKeyPaths in
+        return ReactiveStoreSubscription(store: self, queue: queue) { state, changedKeyPaths in
             if !changedKeyPaths.isDisjoint(with: keyPaths) {
                 handler(self)
             }
@@ -69,11 +69,11 @@ public extension Store {
     }
 }
 
-public class Subscription {
+public class ReactiveStoreSubscription {
     
     internal let observer: NSObjectProtocol
     
-    internal init<Store: ReactiveStore.Store>(store: Store, queue: OperationQueue, handler: @escaping (Store, Set<PartialKeyPath<Store>>) -> Void) {
+    internal init<Store: ReactiveStore>(store: Store, queue: OperationQueue, handler: @escaping (Store, Set<PartialKeyPath<Store>>) -> Void) {
         observer = NotificationCenter.default.addObserver(forName: ReactiveStoreDidChangeNotification, object: store, queue: queue) { notification in
             guard let store = notification.object as? Store else {
                 return
@@ -91,7 +91,7 @@ public class Subscription {
     }
     
     /// Stores subscription in the array.
-    public func store(in subscriptions: inout [Subscription]) {
+    public func store(in subscriptions: inout [ReactiveStoreSubscription]) {
         subscriptions.append(self)
     }
     

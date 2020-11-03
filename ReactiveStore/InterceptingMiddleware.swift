@@ -1,5 +1,5 @@
 //
-//  Middleware.swift
+//  InterceptingMiddleware.swift
 //
 //  Copyright © 2020 Natan Zalkin. All rights reserved.
 //
@@ -29,18 +29,18 @@
 
 import Foundation
 
-public protocol Middleware {
+public protocol InterceptingMiddleware {
     
-    /// This method is called by the store before executing the action
+    /// This method is called by scheduler before executing the action
     /// - Parameters:
     ///   - store: The store that would execute the action
     ///   - action: The action that should be executed
-    func store<Store, Action: ReactiveStore.Action>(_ store: Store, shouldExecute action: Action) -> Bool where Action.Store == Store
+    func scheduler<Scheduler, Action>(_ scheduler: Scheduler, shouldExecute action: Action) -> Bool
     
     
-    /// This method is called by the store after the action is executed
+    /// This method is called by scheduler after the action is executed
     /// - Parameters:
     ///   - store: The store that executed the action
     ///   - action: The action that has been executed
-    func store<Store, Action: ReactiveStore.Action>(_ store: Store, didExecute action: Action) where Action.Store == Store
+    func scheduler<Scheduler, Action>(_ scheduler: Scheduler, didExecute action: Action)
 }

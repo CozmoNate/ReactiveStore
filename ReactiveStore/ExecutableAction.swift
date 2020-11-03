@@ -1,5 +1,5 @@
 //
-//  Action.swift
+//  ExecutableAction.swift
 //
 //  Copyright © 2020 Natan Zalkin. All rights reserved.
 //
@@ -29,9 +29,9 @@
 
 import Foundation
 
-public protocol Action {
+public protocol ExecutableAction {
     
-    associatedtype Store: ReactiveStore.Store
+    associatedtype Scheduler
     
-    func execute(on store: Store, completion: @escaping () -> Void)
+    func execute(on scheduler: Scheduler, completion: @escaping () -> Void)
 }

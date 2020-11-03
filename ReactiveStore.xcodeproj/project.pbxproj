@@ -10,7 +10,7 @@
 		2F07611424E7FC0500A91409 /* ReactiveStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F07610A24E7FC0500A91409 /* ReactiveStore.framework */; };
 		2F07611924E7FC0500A91409 /* ReactiveStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F07611824E7FC0500A91409 /* ReactiveStoreTests.swift */; };
 		2F07611B24E7FC0500A91409 /* ReactiveStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 2F07610D24E7FC0500A91409 /* ReactiveStore.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		2F07612524E7FC1400A91409 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F07612424E7FC1400A91409 /* Store.swift */; };
+		2F07612524E7FC1400A91409 /* ReactiveStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F07612424E7FC1400A91409 /* ReactiveStore.swift */; };
 		2F07612724E7FCDE00A91409 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2F07612624E7FCDE00A91409 /* README.md */; };
 		2F07612924E7FCE300A91409 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 2F07612824E7FCE300A91409 /* LICENSE */; };
 		2F07613F24E8042400A91409 /* ReactiveStore.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 2F07613E24E8042400A91409 /* ReactiveStore.podspec */; };
@@ -18,10 +18,10 @@
 		2F58255924FEBCC100EE543D /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = 2F58255824FEBCC100EE543D /* Quick */; };
 		2F58255C24FEBCD700EE543D /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = 2F58255B24FEBCD700EE543D /* Nimble */; };
 		2F5DF88824F234AE002079AA /* ReactiveStoreObserving.h in Headers */ = {isa = PBXBuildFile; fileRef = 2F5DF87A24F234AE002079AA /* ReactiveStoreObserving.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		2F5DF89124F234BE002079AA /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F07612C24E7FD8600A91409 /* Subscription.swift */; };
+		2F5DF89124F234BE002079AA /* ReactiveStoreSubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F07612C24E7FD8600A91409 /* ReactiveStoreSubscription.swift */; };
 		AA32E5DB25092642004EF482 /* ActionQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA32E5DA25092642004EF482 /* ActionQueue.swift */; };
-		AA6F92ED253DCFF000A530F4 /* Middleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6F92EC253DCFF000A530F4 /* Middleware.swift */; };
-		AAD1FFDA25513635003B3174 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD1FFD925513635003B3174 /* Action.swift */; };
+		AA6F92ED253DCFF000A530F4 /* InterceptingMiddleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6F92EC253DCFF000A530F4 /* InterceptingMiddleware.swift */; };
+		AAD1FFDA25513635003B3174 /* ExecutableAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD1FFD925513635003B3174 /* ExecutableAction.swift */; };
 		AAD269762540464600DA4028 /* MockMiddleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD269752540464600DA4028 /* MockMiddleware.swift */; };
 		AAD2697B2540470200DA4028 /* ReactiveMiddlewareTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAD2697A2540470200DA4028 /* ReactiveMiddlewareTests.swift */; };
 /* End PBXBuildFile section */
@@ -57,10 +57,10 @@
 		2F07611324E7FC0500A91409 /* ReactiveStoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ReactiveStoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F07611824E7FC0500A91409 /* ReactiveStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactiveStoreTests.swift; sourceTree = "<group>"; };
 		2F07611A24E7FC0500A91409 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2F07612424E7FC1400A91409 /* Store.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
+		2F07612424E7FC1400A91409 /* ReactiveStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReactiveStore.swift; sourceTree = "<group>"; };
 		2F07612624E7FCDE00A91409 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		2F07612824E7FCE300A91409 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		2F07612C24E7FD8600A91409 /* Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
+		2F07612C24E7FD8600A91409 /* ReactiveStoreSubscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactiveStoreSubscription.swift; sourceTree = "<group>"; };
 		2F07613C24E8040300A91409 /* Package.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		2F07613E24E8042400A91409 /* ReactiveStore.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReactiveStore.podspec; sourceTree = "<group>"; };
 		2F07615C24EAB82100A91409 /* MockStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStore.swift; sourceTree = "<group>"; };
@@ -68,8 +68,8 @@
 		2F5DF87A24F234AE002079AA /* ReactiveStoreObserving.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReactiveStoreObserving.h; sourceTree = "<group>"; };
 		2F5DF87B24F234AE002079AA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AA32E5DA25092642004EF482 /* ActionQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionQueue.swift; sourceTree = "<group>"; };
-		AA6F92EC253DCFF000A530F4 /* Middleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Middleware.swift; sourceTree = "<group>"; };
-		AAD1FFD925513635003B3174 /* Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
+		AA6F92EC253DCFF000A530F4 /* InterceptingMiddleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterceptingMiddleware.swift; sourceTree = "<group>"; };
+		AAD1FFD925513635003B3174 /* ExecutableAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExecutableAction.swift; sourceTree = "<group>"; };
 		AAD269752540464600DA4028 /* MockMiddleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockMiddleware.swift; sourceTree = "<group>"; };
 		AAD2697A2540470200DA4028 /* ReactiveMiddlewareTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactiveMiddlewareTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -130,9 +130,9 @@
 			isa = PBXGroup;
 			children = (
 				2F07610D24E7FC0500A91409 /* ReactiveStore.h */,
-				AAD1FFD925513635003B3174 /* Action.swift */,
-				2F07612424E7FC1400A91409 /* Store.swift */,
-				AA6F92EC253DCFF000A530F4 /* Middleware.swift */,
+				AAD1FFD925513635003B3174 /* ExecutableAction.swift */,
+				AA6F92EC253DCFF000A530F4 /* InterceptingMiddleware.swift */,
+				2F07612424E7FC1400A91409 /* ReactiveStore.swift */,
 				AA32E5DA25092642004EF482 /* ActionQueue.swift */,
 				2F07610E24E7FC0500A91409 /* Info.plist */,
 			);
@@ -155,7 +155,7 @@
 			isa = PBXGroup;
 			children = (
 				2F5DF87A24F234AE002079AA /* ReactiveStoreObserving.h */,
-				2F07612C24E7FD8600A91409 /* Subscription.swift */,
+				2F07612C24E7FD8600A91409 /* ReactiveStoreSubscription.swift */,
 				2F5DF87B24F234AE002079AA /* Info.plist */,
 			);
 			path = ReactiveStoreObserving;
@@ -321,10 +321,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA6F92ED253DCFF000A530F4 /* Middleware.swift in Sources */,
-				AAD1FFDA25513635003B3174 /* Action.swift in Sources */,
+				AA6F92ED253DCFF000A530F4 /* InterceptingMiddleware.swift in Sources */,
+				AAD1FFDA25513635003B3174 /* ExecutableAction.swift in Sources */,
 				AA32E5DB25092642004EF482 /* ActionQueue.swift in Sources */,
-				2F07612524E7FC1400A91409 /* Store.swift in Sources */,
+				2F07612524E7FC1400A91409 /* ReactiveStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -343,7 +343,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2F5DF89124F234BE002079AA /* Subscription.swift in Sources */,
+				2F5DF89124F234BE002079AA /* ReactiveStoreSubscription.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

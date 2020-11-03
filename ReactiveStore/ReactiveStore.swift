@@ -1,5 +1,5 @@
 //
-//  Store.swift
+//  ReactiveStore.swift
 //
 //  Copyright © 2020 Natan Zalkin. All rights reserved.
 //
@@ -29,20 +29,20 @@
 
 import Foundation
 
-/// Store is an object that represents a state and performs self mutation by handling dispatched actions.
-public protocol Store: AnyObject {
+/// ReactiveStore is an object that represents a state and performs self mutation by handling dispatched actions.
+public protocol ReactiveStore: AnyObject {
 
     /// The queue of postponed actions.
     var actionQueue: ActionQueue { get }
     
     /// The list of objects that are conforming to Middleware protocol and receive events about all executed actions
-    var middlewares: [Middleware] { get }
+    var middlewares: [InterceptingMiddleware] { get }
     
     /// The flag indicating if the store dispatches an action at the moment.
     var isDispatching: Bool { get set }
 }
 
-public extension Store {
+public extension ReactiveStore {
     
     /// Executes the action immediately or postpones the action if another async action is executing at the moment.
     /// If dispatched while an async action is executing, the action will be send to the queue.
@@ -50,7 +50,7 @@ public extension Store {
     /// - Parameters:
     ///   - action: The type of the actions to associate with the handler.
     //    - completion: The block that will be invoked right after the action is finished executing.
-    func dispatch<Action: ReactiveStore.Action>(_ action: Action, completion: (() -> Void)? = nil) where Action.Store == Self {
+    func dispatch<Action: ExecutableAction>(_ action: Action, completion: (() -> Void)? = nil) where Action.Scheduler == Self {
         let actionBlock: () -> Void = { [weak self] in
             self?.execute(action) {
                 completion?()
@@ -66,16 +66,16 @@ public extension Store {
     }
 }
 
-public extension Store {
+public extension ReactiveStore {
     
     /// Unconditionally executes the action on current queue. NOTE: It is not recommended to execute actions directly.
     /// Use "execute" to apply an action immediately inside async "dispatched" action without locking the queue.
     ///
     /// - Parameter action: The action to execute.
-    func execute<Action: ReactiveStore.Action>(_ action: Action, completion: (() -> Void)? = nil) where Action.Store == Self {
+    func execute<Action: ExecutableAction>(_ action: Action, completion: (() -> Void)? = nil) where Action.Scheduler == Self {
         let shouldExecute = middlewares.reduce(into: true) { (result, middleware) in
             guard result else { return }
-            result = middleware.store(self, shouldExecute: action)
+            result = middleware.scheduler(self, shouldExecute: action)
         }
         
         guard shouldExecute else {
@@ -84,7 +84,7 @@ public extension Store {
         }
         
         action.execute(on: self) {
-            self.middlewares.forEach { $0.store(self, didExecute: action) }
+            self.middlewares.forEach { $0.scheduler(self, didExecute: action) }
             completion?()
         }
     }
@@ -94,7 +94,7 @@ public extension Store {
     ///   - action: The action to dispatch.
     ///   - queue: The queue to dispatch action on.
     //    - completion: The block that will be invoked right after the action is finished executing.
-    func dispatch<Action: ReactiveStore.Action>(_ action: Action, on queue: DispatchQueue, completion: (() -> Void)? = nil) where Action.Store == Self {
+    func dispatch<Action: ExecutableAction>(_ action: Action, on queue: DispatchQueue, completion: (() -> Void)? = nil) where Action.Scheduler == Self {
         if DispatchQueue.isRunning(on: queue) {
             dispatch(action, completion: completion)
         } else {
@@ -119,7 +119,7 @@ internal extension DispatchQueue {
     }
 }
 
-internal extension Store {
+internal extension ReactiveStore {
 
     /// Executes the actions from the queue.
     func flush() {

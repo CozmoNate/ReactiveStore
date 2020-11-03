@@ -30,7 +30,7 @@ extension ActionQueue {
 
 class ReactiveStoreTests: QuickSpec {
     override func spec() {
-        describe("Store") {
+        describe("ReactiveStore") {
             var subject: MockStore!
             
             beforeEach {
@@ -78,7 +78,7 @@ class ReactiveStoreTests: QuickSpec {
             }
             
             context("when subscribed to changes and executed action") {
-                var subscriptions: [Subscription]!
+                var subscriptions: [ReactiveStoreSubscription]!
                 var keyPaths: Set<PartialKeyPath<MockStore>>?
                 
                 beforeEach {
@@ -109,7 +109,7 @@ class ReactiveStoreTests: QuickSpec {
             }
             
             context("when subscribed to SPECIFIC changes and executed action") {
-                var subscriptions: [Subscription]!
+                var subscriptions: [ReactiveStoreSubscription]!
                 var changed: Bool?
                 
                 beforeEach {

@@ -10,22 +10,22 @@ import Foundation
 
 @testable import ReactiveStore
 
-class MockMiddleware: Middleware {
+class MockMiddleware: InterceptingMiddleware {
     
     var shouldExecute = true
-    var lastExecutedStore: Store?
+    var lastExecutedStore: Any?
     var lastExecutedAction: Any?
     var lastAskedAction: Any?
-    var lastAskedStore: Store?
+    var lastAskedStore: Any?
     
-    func store<Store, Action: ReactiveStore.Action>(_ store: Store, shouldExecute action: Action) -> Bool where Action.Store == Store {
-        lastAskedStore = store
+    func scheduler<Scheduler, Action>(_ scheduler: Scheduler, shouldExecute action: Action) -> Bool {
+        lastAskedStore = scheduler
         lastAskedAction = action
         return shouldExecute
     }
     
-    func store<Store, Action: ReactiveStore.Action>(_ store: Store, didExecute action: Action) where Action.Store == Store {
-        lastExecutedStore = store
+    func scheduler<Scheduler, Action>(_ scheduler: Scheduler, didExecute action: Action) {
+        lastExecutedStore = scheduler
         lastExecutedAction = action
     }
 }

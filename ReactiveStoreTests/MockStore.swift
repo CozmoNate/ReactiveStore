@@ -11,11 +11,11 @@ import Foundation
 @testable import ReactiveStore
 @testable import ReactiveStoreObserving
 
-class MockStore: ReactiveStore.Store {
+class MockStore: ReactiveStore {
     
     struct Action {
         
-        struct Change: ReactiveStore.Action {
+        struct Change: ExecutableAction {
             let value: String
             
             func execute(on store: MockStore, completion: @escaping () -> Void) {
@@ -26,7 +26,7 @@ class MockStore: ReactiveStore.Store {
             }
         }
         
-        struct AsyncChange: ReactiveStore.Action {
+        struct AsyncChange: ExecutableAction {
             let value: String
             
             func execute(on store: MockStore, completion: @escaping () -> Void) {
@@ -38,7 +38,7 @@ class MockStore: ReactiveStore.Store {
             }
         }
         
-        struct Update: ReactiveStore.Action {
+        struct Update: ExecutableAction {
             let number: Int
             
             func execute(on store: MockStore, completion: @escaping () -> Void) {
@@ -55,6 +55,6 @@ class MockStore: ReactiveStore.Store {
     var lastQueueIdentifier: UUID!
     
     var actionQueue = ActionQueue()
-    var middlewares = Array<Middleware>([MockMiddleware()])
+    var middlewares = Array<InterceptingMiddleware>([MockMiddleware()])
     var isDispatching = false
 }

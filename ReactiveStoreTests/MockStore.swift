@@ -15,10 +15,11 @@ class MockStore: ReactiveStore {
     
     struct Action {
         
-        struct Change: ApplicableAction {
+        struct Change: ExecutableAction {
             let value: String
             
-            func apply(on store: MockStore) {
+            func execute(on store: MockStore, completion: @escaping () -> Void) {
+                defer { completion() }
                 store.lastQueueIdentifier = DispatchQueue.getSpecific(key: ReactiveStoreQueueIdentifierKey)
                 store.value = value
                 store.notify(keyPathsChanged: [\MockStore.value])
@@ -37,10 +38,11 @@ class MockStore: ReactiveStore {
             }
         }
         
-        struct Update: ApplicableAction {
+        struct Update: ExecutableAction {
             let number: Int
             
-            func apply(on store: MockStore) {
+            func execute(on store: MockStore, completion: @escaping () -> Void) {
+                defer { completion() }
                 store.number = number
                 store.notify(keyPathsChanged: [\MockStore.number])
             }

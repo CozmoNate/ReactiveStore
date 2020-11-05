@@ -50,7 +50,7 @@ public extension ReactiveStore {
     /// - Parameters:
     ///   - action: The type of the actions to associate with the handler.
     //    - completion: The block that will be invoked right after the action is finished executing.
-    func dispatch<Action: ExecutableAction>(_ action: Action, completion: (() -> Void)? = nil) where Action.Scheduler == Self {
+    func dispatch<Action: ExecutableAction>(_ action: Action, completion: (() -> Void)? = nil) where Action.Store == Self {
         let actionBlock: () -> Void = { [weak self] in
             self?.execute(action) {
                 completion?()
@@ -72,7 +72,7 @@ public extension ReactiveStore {
     /// Use "execute" to apply an action immediately inside async "dispatched" action without locking the queue.
     ///
     /// - Parameter action: The action to execute.
-    func execute<Action: ExecutableAction>(_ action: Action, completion: (() -> Void)? = nil) where Action.Scheduler == Self {
+    func execute<Action: ExecutableAction>(_ action: Action, completion: (() -> Void)? = nil) where Action.Store == Self {
         let shouldExecute = middlewares.reduce(into: true) { (result, middleware) in
             guard result else { return }
             result = middleware.scheduler(self, shouldExecute: action)
@@ -94,7 +94,7 @@ public extension ReactiveStore {
     ///   - action: The action to dispatch.
     ///   - queue: The queue to dispatch action on.
     //    - completion: The block that will be invoked right after the action is finished executing.
-    func dispatch<Action: ExecutableAction>(_ action: Action, on queue: DispatchQueue, completion: (() -> Void)? = nil) where Action.Scheduler == Self {
+    func dispatch<Action: ExecutableAction>(_ action: Action, on queue: DispatchQueue, completion: (() -> Void)? = nil) where Action.Store == Self {
         if DispatchQueue.isRunning(on: queue) {
             dispatch(action, completion: completion)
         } else {

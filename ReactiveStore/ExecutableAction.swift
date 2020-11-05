@@ -31,8 +31,7 @@ import Foundation
 
 public protocol ExecutableAction {
     
-    associatedtype Scheduler
+    associatedtype Store
     
-    func execute(on scheduler: Scheduler, completion: @escaping () -> Void)
+    func execute(on store: Store, completion: @escaping () -> Void)
 }
-

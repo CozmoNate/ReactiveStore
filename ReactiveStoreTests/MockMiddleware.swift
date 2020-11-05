@@ -18,14 +18,14 @@ class MockMiddleware: InterceptingMiddleware {
     var lastAskedAction: Any?
     var lastAskedStore: Any?
     
-    func scheduler<Scheduler, Action>(_ scheduler: Scheduler, shouldExecute action: Action) -> Bool {
-        lastAskedStore = scheduler
+    func store<Store, Action>(_ store: Store, shouldExecute action: Action) -> Bool {
+        lastAskedStore = store
         lastAskedAction = action
         return shouldExecute
     }
     
-    func scheduler<Scheduler, Action>(_ scheduler: Scheduler, didExecute action: Action) {
-        lastExecutedStore = scheduler
+    func store<Store, Action>(_ store: Store, didExecute action: Action) {
+        lastExecutedStore = store
         lastExecutedAction = action
     }
 }

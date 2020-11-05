@@ -75,7 +75,7 @@ public extension ReactiveStore {
     func execute<Action: ExecutableAction>(_ action: Action, completion: (() -> Void)? = nil) where Action.Store == Self {
         let shouldExecute = middlewares.reduce(into: true) { (result, middleware) in
             guard result else { return }
-            result = middleware.scheduler(self, shouldExecute: action)
+            result = middleware.store(self, shouldExecute: action)
         }
         
         guard shouldExecute else {
@@ -84,7 +84,7 @@ public extension ReactiveStore {
         }
         
         action.execute(on: self) {
-            self.middlewares.forEach { $0.scheduler(self, didExecute: action) }
+            self.middlewares.forEach { $0.store(self, didExecute: action) }
             completion?()
         }
     }

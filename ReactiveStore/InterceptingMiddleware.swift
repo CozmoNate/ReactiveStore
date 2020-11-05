@@ -31,16 +31,16 @@ import Foundation
 
 public protocol InterceptingMiddleware {
     
-    /// This method is called by scheduler before executing the action
+    /// This method is called by the store before executing the action
     /// - Parameters:
     ///   - store: The store that would execute the action
     ///   - action: The action that should be executed
-    func scheduler<Scheduler, Action>(_ scheduler: Scheduler, shouldExecute action: Action) -> Bool
+    func store<Store, Action>(_ store: Store, shouldExecute action: Action) -> Bool
     
     
-    /// This method is called by scheduler after the action is executed
+    /// This method is called by the store after the action is executed
     /// - Parameters:
     ///   - store: The store that executed the action
     ///   - action: The action that has been executed
-    func scheduler<Scheduler, Action>(_ scheduler: Scheduler, didExecute action: Action)
+    func store<Store, Action>(_ scheduler: Store, didExecute action: Action)
 }

@@ -33,10 +33,10 @@ import Foundation
 public protocol ReactiveStore: AnyObject {
 
     /// The queue of postponed actions.
-    var actionQueue: ActionQueue { get }
+    var actionQueue: ActionQueue { get set }
     
     /// The list of objects that are conforming to Middleware protocol and receive events about all executed actions
-    var middlewares: [InterceptingMiddleware] { get }
+    var middlewares: [InterceptingMiddleware] { get set }
     
     /// The flag indicating if the store dispatches an action at the moment.
     var isDispatching: Bool { get set }

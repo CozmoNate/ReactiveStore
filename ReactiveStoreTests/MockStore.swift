@@ -8,17 +8,17 @@
 
 import Foundation
 
+@testable import ActionDispatcher
 @testable import ReactiveStore
-@testable import ReactiveStoreObserving
 
-class MockStore: ReactiveStore {
+class MockStore: ActionDispatcher, ReactiveStore {
     
     struct Action {
         
         struct Change: ExecutableAction {
             let value: String
             
-            func execute(on store: MockStore, completion: @escaping () -> Void) {
+            func execute(with store: MockStore, completion: @escaping () -> Void) {
                 defer { completion() }
                 store.lastQueueIdentifier = DispatchQueue.getSpecific(key: ReactiveStoreQueueIdentifierKey)
                 store.value = value
@@ -29,7 +29,7 @@ class MockStore: ReactiveStore {
         struct AsyncChange: ExecutableAction {
             let value: String
             
-            func execute(on store: MockStore, completion: @escaping () -> Void) {
+            func execute(with store: MockStore, completion: @escaping () -> Void) {
                 OperationQueue.current?.underlyingQueue?.asyncAfter(deadline: .now() + .milliseconds(250)) {
                     store.value = value
                     store.notify(keyPathsChanged: [\MockStore.value])
@@ -41,7 +41,7 @@ class MockStore: ReactiveStore {
         struct Update: ExecutableAction {
             let number: Int
             
-            func execute(on store: MockStore, completion: @escaping () -> Void) {
+            func execute(with store: MockStore, completion: @escaping () -> Void) {
                 defer { completion() }
                 store.number = number
                 store.notify(keyPathsChanged: [\MockStore.number])

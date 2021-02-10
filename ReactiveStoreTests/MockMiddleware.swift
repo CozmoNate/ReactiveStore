@@ -8,7 +8,7 @@
 
 import Foundation
 
-@testable import ReactiveStore
+@testable import ActionDispatcher
 
 class MockMiddleware: InterceptingMiddleware {
     

@@ -1,5 +1,5 @@
 //
-//  ReactiveStore.swift
+//  ReactiveStoreSubscription.swift
 //
 //  Copyright © 2020 Natan Zalkin. All rights reserved.
 //
@@ -29,104 +29,74 @@
 
 import Foundation
 
-/// ReactiveStore is an object that represents a state and performs self mutation by handling dispatched actions.
-public protocol ReactiveStore: AnyObject {
+public let ReactiveStoreDidChangeNotification = Notification.Name("ReactiveStoreDidChange")
+public let ReactiveStoreKeyPathsKey = "keyPaths"
 
-    /// The queue of postponed actions.
-    var actionQueue: ActionQueue { get set }
-    
-    /// The list of objects that are conforming to Middleware protocol and receive events about all executed actions
-    var middlewares: [InterceptingMiddleware] { get set }
-    
-    /// The flag indicating if the store dispatches an action at the moment.
-    var isDispatching: Bool { get set }
-}
+public protocol ReactiveStore {}
 
 public extension ReactiveStore {
-    
-    /// Executes the action immediately or postpones the action if another async action is executing at the moment.
-    /// If dispatched while an async action is executing, the action will be send to the queue.
-    /// Actions from queue are executed serially in FIFO order, right after the previous action finishes dispatching.
-    /// - Parameters:
-    ///   - action: The type of the actions to associate with the handler.
-    //    - completion: The block that will be invoked right after the action is finished executing.
-    func dispatch<Action: ExecutableAction>(_ action: Action, completion: (() -> Void)? = nil) where Action.Store == Self {
-        let actionBlock: () -> Void = { [weak self] in
-            self?.execute(action) {
-                completion?()
-                self?.flush()
-            }
-        }
-        if isDispatching {
-            actionQueue.enqueue(actionBlock)
-        } else {
-            isDispatching = true
-            actionBlock()
-        }
-    }
-}
 
-public extension ReactiveStore {
-    
-    /// Unconditionally executes the action on current queue. NOTE: It is not recommended to execute actions directly.
-    /// Use "execute" to apply an action immediately inside async "dispatched" action without locking the queue.
-    ///
-    /// - Parameter action: The action to execute.
-    func execute<Action: ExecutableAction>(_ action: Action, completion: (() -> Void)? = nil) where Action.Store == Self {
-        let shouldExecute = middlewares.reduce(into: true) { (result, middleware) in
-            guard result else { return }
-            result = middleware.store(self, shouldExecute: action)
-        }
-        
-        guard shouldExecute else {
-            completion?()
-            return
-        }
-        
-        action.execute(on: self) {
-            self.middlewares.forEach { $0.store(self, didExecute: action) }
-            completion?()
-        }
+    /// Notify observers about changed properties.
+    func notify(keyPathsChanged: Set<PartialKeyPath<Self>>) {
+        NotificationCenter.default.post(
+            name: ReactiveStoreDidChangeNotification,
+            object: self,
+            userInfo: [ReactiveStoreKeyPathsKey: keyPathsChanged]
+        )
     }
     
-    /// Asynchronously dispatches the action on specified queue using barrier flag (serially). If already running on the specified queue, dispatches the action synchronously.
-    /// - Parameters:
-    ///   - action: The action to dispatch.
-    ///   - queue: The queue to dispatch action on.
-    //    - completion: The block that will be invoked right after the action is finished executing.
-    func dispatch<Action: ExecutableAction>(_ action: Action, on queue: DispatchQueue, completion: (() -> Void)? = nil) where Action.Store == Self {
-        if DispatchQueue.isRunning(on: queue) {
-            dispatch(action, completion: completion)
-        } else {
-            queue.async(flags: .barrier) {
-                self.dispatch(action, completion: completion)
+    /// Adds an observer that will be invoked each time the store changes.
+    /// - Parameter queue: The queue to schedule change handler on.
+    /// - Parameter changeHandler: The closure will be invoked each time the store changes.
+    func addObserver(queue: OperationQueue = .main,
+                     handler: @escaping (Self, Set<PartialKeyPath<Self>>) -> Void) -> ReactiveStoreSubscription {
+        defer { handler(self, [\Self.self]) }
+        return ReactiveStoreSubscription(store: self, queue: queue, handler: handler)
+    }
+    
+    /// Adds an observer that will be invoked each time the store changes.
+    /// - Parameter keyPaths: The list of KeyPaths describing the fields in the store that should trigger the change handler upon mutation.
+    /// - Parameter queue: The queue to schedule change handler on
+    /// - Parameter handler: The closure will be invoked each time the store changes fields included in observingKeyPaths param.
+    func addObserver(for keyPaths: [PartialKeyPath<Self>],
+                     queue: OperationQueue = .main,
+                     handler: @escaping (Self) -> Void) -> ReactiveStoreSubscription {
+        defer { handler(self) }
+        return ReactiveStoreSubscription(store: self, queue: queue) { state, changedKeyPaths in
+            if !changedKeyPaths.isDisjoint(with: keyPaths) {
+                handler(self)
             }
         }
     }
 }
 
-internal let ReactiveStoreQueueIdentifierKey = DispatchSpecificKey<UUID>()
-
-internal extension DispatchQueue {
+public class ReactiveStoreSubscription {
     
-    static func isRunning(on queue: DispatchQueue) -> Bool {
-        var identifier: UUID! = queue.getSpecific(key: ReactiveStoreQueueIdentifierKey)
-        if identifier == nil {
-            identifier = UUID()
-            queue.setSpecific(key: ReactiveStoreQueueIdentifierKey, value: identifier)
+    internal let observer: NSObjectProtocol
+    
+    internal init<Store: ReactiveStore>(store: Store, queue: OperationQueue, handler: @escaping (Store, Set<PartialKeyPath<Store>>) -> Void) {
+        observer = NotificationCenter.default.addObserver(forName: ReactiveStoreDidChangeNotification, object: store, queue: queue) { notification in
+            guard let store = notification.object as? Store else {
+                return
+            }
+            guard let keyPaths = notification.userInfo?[ReactiveStoreKeyPathsKey] as? Set<PartialKeyPath<Store>> else {
+                return
+            }
+            handler(store, keyPaths)
         }
-        return DispatchQueue.getSpecific(key: ReactiveStoreQueueIdentifierKey) == identifier
     }
-}
-
-internal extension ReactiveStore {
-
-    /// Executes the actions from the queue.
-    func flush() {
-        if let nextAction = actionQueue.dequeue() {
-            nextAction()
-        } else {
-            isDispatching = false
-        }
+    
+    /// Cancels current subscription and stops receiving updates.
+    public func cancel() {
+        NotificationCenter.default.removeObserver(observer)
+    }
+    
+    /// Stores subscription in the array.
+    public func store(in subscriptions: inout [ReactiveStoreSubscription]) {
+        subscriptions.append(self)
+    }
+    
+    deinit {
+        cancel()
     }
 }

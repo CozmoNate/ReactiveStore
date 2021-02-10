@@ -9,8 +9,8 @@
 import Quick
 import Nimble
 
+@testable import ActionDispatcher
 @testable import ReactiveStore
-@testable import ReactiveStoreObserving
 
 extension ActionQueue {
     
@@ -30,7 +30,7 @@ extension ActionQueue {
 
 class ReactiveStoreTests: QuickSpec {
     override func spec() {
-        describe("ReactiveStore") {
+        describe("ActionDispatcher") {
             var subject: MockStore!
             
             beforeEach {

@@ -31,7 +31,7 @@ import Foundation
 
 public protocol ExecutableAction {
     
-    associatedtype Store
+    associatedtype Dispatcher
     
-    func execute(on store: Store, completion: @escaping () -> Void)
+    func execute(with dispatcher: Dispatcher, completion: @escaping () -> Void)
 }

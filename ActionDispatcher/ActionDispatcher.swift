@@ -75,7 +75,7 @@ public extension ActionDispatcher {
     func execute<Action: ExecutableAction>(_ action: Action, completion: (() -> Void)? = nil) where Action.Dispatcher == Self {
         let shouldExecute = middlewares.reduce(into: true) { (result, middleware) in
             guard result else { return }
-            result = middleware.store(self, shouldExecute: action)
+            result = middleware.dispatcher(self, shouldExecute: action)
         }
         
         guard shouldExecute else {
@@ -84,7 +84,7 @@ public extension ActionDispatcher {
         }
         
         action.execute(with: self) {
-            self.middlewares.forEach { $0.store(self, didExecute: action) }
+            self.middlewares.forEach { $0.dispatcher(self, didExecute: action) }
             completion?()
         }
     }

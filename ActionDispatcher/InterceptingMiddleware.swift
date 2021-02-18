@@ -31,16 +31,16 @@ import Foundation
 
 public protocol InterceptingMiddleware {
     
-    /// This method is called by the store before executing the action
+    /// This method is called by the dispatcher before executing the action
     /// - Parameters:
-    ///   - store: The store that would execute the action
+    ///   - dispatcher: The dispatcher that would execute the action
     ///   - action: The action that should be executed
-    func store<Store, Action>(_ store: Store, shouldExecute action: Action) -> Bool
+    func dispatcher<Dispatcher, Action>(_ dispatcher: Dispatcher, shouldExecute action: Action) -> Bool
     
     
-    /// This method is called by the store after the action is executed
+    /// This method is called by the dispatcher after the action is executed
     /// - Parameters:
-    ///   - store: The store that executed the action
+    ///   - dispatcher: The dispatcher that executed the action
     ///   - action: The action that has been executed
-    func store<Store, Action>(_ scheduler: Store, didExecute action: Action)
+    func dispatcher<Dispatcher, Action>(_ dispatcher: Dispatcher, didExecute action: Action)
 }

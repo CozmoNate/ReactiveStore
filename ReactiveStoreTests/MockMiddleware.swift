@@ -13,19 +13,19 @@ import Foundation
 class MockMiddleware: InterceptingMiddleware {
     
     var shouldExecute = true
-    var lastExecutedStore: Any?
+    var lastExecutedDispatcher: Any?
     var lastExecutedAction: Any?
     var lastAskedAction: Any?
     var lastAskedStore: Any?
     
-    func store<Store, Action>(_ store: Store, shouldExecute action: Action) -> Bool {
-        lastAskedStore = store
+    func dispatcher<Dispatcher, Action>(_ dispatcher: Dispatcher, shouldExecute action: Action) -> Bool {
+        lastAskedStore = dispatcher
         lastAskedAction = action
         return shouldExecute
     }
     
-    func store<Store, Action>(_ store: Store, didExecute action: Action) {
-        lastExecutedStore = store
+    func dispatcher<Dispatcher, Action>(_ dispatcher: Dispatcher, didExecute action: Action) {
+        lastExecutedDispatcher = dispatcher
         lastExecutedAction = action
     }
 }

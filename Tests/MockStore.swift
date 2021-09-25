@@ -6,8 +6,9 @@
 import Foundation
 
 @testable import Dispatcher
+@testable import ReactiveObject
 
-class MockStore: Dispatcher, ReactiveStore {
+class MockStore: Dispatcher, ReactiveObject {
     
     struct Actions {
         

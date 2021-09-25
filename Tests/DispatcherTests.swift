@@ -7,6 +7,7 @@ import Quick
 import Nimble
 
 @testable import Dispatcher
+@testable import ReactiveObject
 
 extension Pipeline {
     
@@ -74,7 +75,7 @@ class DispatcherTests: QuickSpec {
             }
             
             context("when subscribed to changes and executed action") {
-                var subscriptions: [ReactiveStoreSubscription]!
+                var subscriptions: [ReactiveObjectSubscription]!
                 var keyPaths: Set<PartialKeyPath<MockStore>>?
                 
                 beforeEach {
@@ -105,7 +106,7 @@ class DispatcherTests: QuickSpec {
             }
             
             context("when subscribed to SPECIFIC changes and executed action") {
-                var subscriptions: [ReactiveStoreSubscription]!
+                var subscriptions: [ReactiveObjectSubscription]!
                 var changed: Bool?
                 
                 beforeEach {

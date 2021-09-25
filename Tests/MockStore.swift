@@ -6,7 +6,6 @@
 import Foundation
 
 @testable import Dispatcher
-@testable import ReactiveStore
 
 class MockStore: Dispatcher, ReactiveStore {
     

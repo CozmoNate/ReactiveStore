@@ -6,7 +6,7 @@
 import Quick
 import Nimble
 
-@testable import ReactiveStore
+@testable import Dispatcher
 
 class MiddlewareTests: QuickSpec {
     override func spec() {

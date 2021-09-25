@@ -7,7 +7,6 @@ import Quick
 import Nimble
 
 @testable import Dispatcher
-@testable import ReactiveStore
 
 extension Pipeline {
     

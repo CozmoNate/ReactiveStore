@@ -1,4 +1,4 @@
-// swift-tools-version:5.0
+// swift-tools-version:5.1
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -14,16 +14,16 @@ let package = Package(
     products: [
         .library(name: "Dispatcher",
                  targets: ["Dispatcher"]),
-        .library(name: "ReactiveStore",
-                 targets: ["ReactiveStore"]),
+        .library(name: "ReactiveObject",
+                 targets: ["ReactiveObject"]),
     ],
     targets: [
         .target(name: "Dispatcher",
                 dependencies: [],
                 path: "Dispatcher"),
-        .target(name: "ReactiveStore",
+        .target(name: "ReactiveObject",
                 dependencies: [],
-                path: "ReactiveStore"),
+                path: "ReactiveObject"),
     ],
     swiftLanguageVersions: [ .v5 ]
 )

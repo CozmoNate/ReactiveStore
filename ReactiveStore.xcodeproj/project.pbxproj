@@ -67,6 +67,9 @@
 		2F5DF87824F234AE002079AA /* ReactiveObject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ReactiveObject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F5DF87A24F234AE002079AA /* ReactiveObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReactiveObject.h; sourceTree = "<group>"; };
 		2F5DF87B24F234AE002079AA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2F9B7B4E26FF5793004F7C95 /* .coveralls.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .coveralls.yml; sourceTree = "<group>"; };
+		2F9B7B4F26FF5793004F7C95 /* .slather.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .slather.yml; sourceTree = "<group>"; };
+		2F9B7B5026FF5793004F7C95 /* .travis.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .travis.yml; sourceTree = "<group>"; };
 		AA32E5DA25092642004EF482 /* Pipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pipeline.swift; sourceTree = "<group>"; };
 		AA6F92EC253DCFF000A530F4 /* Middleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Middleware.swift; sourceTree = "<group>"; };
 		AAD1FFD925513635003B3174 /* Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
@@ -112,6 +115,9 @@
 				2F07610C24E7FC0500A91409 /* Dispatcher */,
 				2F5DF87924F234AE002079AA /* ReactiveObject */,
 				2F07611724E7FC0500A91409 /* Tests */,
+				2F9B7B4E26FF5793004F7C95 /* .coveralls.yml */,
+				2F9B7B4F26FF5793004F7C95 /* .slather.yml */,
+				2F9B7B5026FF5793004F7C95 /* .travis.yml */,
 				2F07610B24E7FC0500A91409 /* Products */,
 			);
 			sourceTree = "<group>";

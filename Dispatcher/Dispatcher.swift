@@ -1,5 +1,5 @@
 //
-//  ActionDispatcher.swift
+//  Dispatcher.swift
 //
 //  Copyright © 2020 Natan Zalkin. All rights reserved.
 //
@@ -29,28 +29,28 @@
 
 import Foundation
 
-/// ActionDispatcher is an object allowing to dispatch actions and provides infrastructure for action to perform job
-public protocol ActionDispatcher: AnyObject {
+/// Dispatcher is an object allowing to dispatch actions and provides infrastructure for action to perform job
+public protocol Dispatcher: AnyObject {
 
     /// The queue of postponed actions
-    var actionQueue: ActionQueue { get set }
+    var pipeline: Pipeline { get set }
     
     /// The list of objects that are conforming to Middleware protocol and receive events when the action is executed
-    var middlewares: [InterceptingMiddleware] { get set }
+    var middlewares: [Middleware] { get set }
     
-    /// The flag indicating if an action is being dispatched right now
+    /// The flag indicating that an action is being dispatched right now
     var isDispatching: Bool { get set }
 }
 
-public extension ActionDispatcher {
+public extension Dispatcher {
     
     /// Executes the action immediately or postpones the action if another async action is executing at the moment.
-    /// If dispatched while an async action is executing, the action will be send to the queue.
-    /// Actions from queue are executed serially in FIFO order, right after the previous action finishes dispatching.
+    /// If dispatched while an async action is executing, the action will be send to the pipeline.
+    /// Actions from pipeline are executed serially in FIFO order, right after the previous action finishes dispatching.
     /// - Parameters:
     ///   - action: The type of the actions to associate with the handler.
-    //    - completion: The block that will be invoked right after the action is finished executing.
-    func dispatch<Action: ExecutableAction>(_ action: Action, completion: (() -> Void)? = nil) where Action.Dispatcher == Self {
+    ///   - completion: The block that will be invoked right after the action is finished executing.
+    func dispatch<T: Action>(_ action: T, completion: (() -> Void)? = nil) where T.Dispatcher == Self {
         let actionBlock: () -> Void = { [weak self] in
             self?.execute(action) {
                 completion?()
@@ -58,7 +58,7 @@ public extension ActionDispatcher {
             }
         }
         if isDispatching {
-            actionQueue.enqueue(actionBlock)
+            pipeline.schedule(actionBlock)
         } else {
             isDispatching = true
             actionBlock()
@@ -66,13 +66,13 @@ public extension ActionDispatcher {
     }
 }
 
-public extension ActionDispatcher {
+public extension Dispatcher {
     
     /// Unconditionally executes the action on current queue. NOTE: It is not recommended to execute actions directly.
     /// Use "execute" to apply an action immediately inside async "dispatched" action without locking the queue.
     ///
     /// - Parameter action: The action to execute.
-    func execute<Action: ExecutableAction>(_ action: Action, completion: (() -> Void)? = nil) where Action.Dispatcher == Self {
+    func execute<T: Action>(_ action: T, completion: (() -> Void)? = nil) where T.Dispatcher == Self {
         let shouldExecute = middlewares.reduce(into: true) { (result, middleware) in
             guard result else { return }
             result = middleware.dispatcher(self, shouldExecute: action)
@@ -93,8 +93,8 @@ public extension ActionDispatcher {
     /// - Parameters:
     ///   - action: The action to dispatch.
     ///   - queue: The queue to dispatch action on.
-    //    - completion: The block that will be invoked right after the action is finished executing.
-    func dispatch<Action: ExecutableAction>(_ action: Action, on queue: DispatchQueue, completion: (() -> Void)? = nil) where Action.Dispatcher == Self {
+    ///   - completion: The block that will be invoked right after the action is finished executing.
+    func dispatch<T: Action>(_ action: T, on queue: DispatchQueue, completion: (() -> Void)? = nil) where T.Dispatcher == Self {
         if DispatchQueue.isRunning(on: queue) {
             dispatch(action, completion: completion)
         } else {
@@ -105,27 +105,25 @@ public extension ActionDispatcher {
     }
 }
 
-internal let ReactiveStoreQueueIdentifierKey = DispatchSpecificKey<UUID>()
+internal let DispatcherQueueIdentifierKey = DispatchSpecificKey<UUID>()
 
 internal extension DispatchQueue {
     
     static func isRunning(on queue: DispatchQueue) -> Bool {
-        var identifier: UUID! = queue.getSpecific(key: ReactiveStoreQueueIdentifierKey)
+        var identifier: UUID! = queue.getSpecific(key: DispatcherQueueIdentifierKey)
         if identifier == nil {
             identifier = UUID()
-            queue.setSpecific(key: ReactiveStoreQueueIdentifierKey, value: identifier)
+            queue.setSpecific(key: DispatcherQueueIdentifierKey, value: identifier)
         }
-        return DispatchQueue.getSpecific(key: ReactiveStoreQueueIdentifierKey) == identifier
+        return DispatchQueue.getSpecific(key: DispatcherQueueIdentifierKey) == identifier
     }
 }
 
-internal extension ActionDispatcher {
+internal extension Dispatcher {
 
-    /// Executes the actions from the queue.
+    /// Try to flush the pipeline by executing next action
     func flush() {
-        if let nextAction = actionQueue.dequeue() {
-            nextAction()
-        } else {
+        if pipeline.flush() {
             isDispatching = false
         }
     }

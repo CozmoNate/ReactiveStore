@@ -1,32 +1,29 @@
 //
-//  MockStore.swift
-//  ReactiveStoreTests
-//
 //  Created by Natan Zalkin on 17/08/2020.
 //  Copyright © 2020 Natan Zalkin. All rights reserved.
 //
 
 import Foundation
 
-@testable import ActionDispatcher
+@testable import Dispatcher
 @testable import ReactiveStore
 
-class MockStore: ActionDispatcher, ReactiveStore {
+class MockStore: Dispatcher, ReactiveStore {
     
-    struct Action {
+    struct Actions {
         
-        struct Change: ExecutableAction {
+        struct Change: Action {
             let value: String
             
             func execute(with store: MockStore, completion: @escaping () -> Void) {
                 defer { completion() }
-                store.lastQueueIdentifier = DispatchQueue.getSpecific(key: ReactiveStoreQueueIdentifierKey)
+                store.lastQueueIdentifier = DispatchQueue.getSpecific(key: DispatcherQueueIdentifierKey)
                 store.value = value
                 store.notify(keyPathsChanged: [\MockStore.value])
             }
         }
         
-        struct AsyncChange: ExecutableAction {
+        struct AsyncChange: Action {
             let value: String
             
             func execute(with store: MockStore, completion: @escaping () -> Void) {
@@ -38,7 +35,7 @@ class MockStore: ActionDispatcher, ReactiveStore {
             }
         }
         
-        struct Update: ExecutableAction {
+        struct Update: Action {
             let number: Int
             
             func execute(with store: MockStore, completion: @escaping () -> Void) {
@@ -54,7 +51,7 @@ class MockStore: ActionDispatcher, ReactiveStore {
     
     var lastQueueIdentifier: UUID!
     
-    var actionQueue = ActionQueue()
-    var middlewares = Array<InterceptingMiddleware>([MockMiddleware()])
+    var pipeline = Pipeline()
+    var middlewares = [MockMiddleware()] as Array<Middleware>
     var isDispatching = false
 }

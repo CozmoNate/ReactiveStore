@@ -1,7 +1,4 @@
 //
-//  ReactiveStoreTests.swift
-//  ReactiveStoreTests
-//
 //  Created by Natan Zalkin on 15/08/2020.
 //  Copyright © 2020 Natan Zalkin. All rights reserved.
 //
@@ -9,10 +6,10 @@
 import Quick
 import Nimble
 
-@testable import ActionDispatcher
+@testable import Dispatcher
 @testable import ReactiveStore
 
-extension ActionQueue {
+extension Pipeline {
     
     var count: Int {
         guard var item = head else {
@@ -28,9 +25,9 @@ extension ActionQueue {
     
 }
 
-class ReactiveStoreTests: QuickSpec {
+class DispatcherTests: QuickSpec {
     override func spec() {
-        describe("ActionDispatcher") {
+        describe("Dispatcher") {
             var subject: MockStore!
             
             beforeEach {
@@ -40,7 +37,7 @@ class ReactiveStoreTests: QuickSpec {
             context("when executing synchronous action") {
                 
                 beforeEach {
-                    subject.execute(MockStore.Action.Change(value: "sync test"), completion: {})
+                    subject.execute(MockStore.Actions.Change(value: "sync test"), completion: {})
                 }
                 
                 it("can handles the action and correctly changes the state") {
@@ -50,11 +47,11 @@ class ReactiveStoreTests: QuickSpec {
             
             context("when executing asynchronous action") {
                 beforeEach {
-                    subject.execute(MockStore.Action.AsyncChange(value: "sync test"), completion: {})
+                    subject.execute(MockStore.Actions.AsyncChange(value: "sync test"), completion: {})
                 }
                 
                 it("can handles the action and correctly changes the state") {
-                    expect(subject.actionQueue.isEmpty).to(beTrue())
+                    expect(subject.pipeline.isEmpty).to(beTrue())
                     expect(subject.value).to(equal("initial"))
                     expect(subject.value).toEventually(equal("sync test"))
                 }
@@ -62,18 +59,18 @@ class ReactiveStoreTests: QuickSpec {
             
             context("when dispatching actions") {
                 beforeEach {
-                    subject.dispatch(MockStore.Action.AsyncChange(value: "async test"))
-                    subject.dispatch(MockStore.Action.AsyncChange(value: "async test after"))
-                    subject.dispatch(MockStore.Action.Change(value: "async test finish"))
+                    subject.dispatch(MockStore.Actions.AsyncChange(value: "async test"))
+                    subject.dispatch(MockStore.Actions.AsyncChange(value: "async test after"))
+                    subject.dispatch(MockStore.Actions.Change(value: "async test finish"))
                 }
                 
                 it("can handles the action and correctly changes the state") {
                     expect(subject.isDispatching).to(beTrue())
-                    expect(subject.actionQueue.count).to(equal(2))
+                    expect(subject.pipeline.count).to(equal(2))
                     expect(subject.value).to(equal("initial"))
                     expect(subject.value).toEventually(equal("async test finish"))
                     expect(subject.isDispatching).to(beFalse())
-                    expect(subject.actionQueue.isEmpty).to(beTrue())
+                    expect(subject.pipeline.isEmpty).to(beTrue())
                 }
             }
             
@@ -86,7 +83,7 @@ class ReactiveStoreTests: QuickSpec {
                     subject.addObserver { (store, paths) in
                         keyPaths = paths
                     }.store(in: &subscriptions)
-                    subject.execute(MockStore.Action.AsyncChange(value: "test subscribe"), completion: {})
+                    subject.execute(MockStore.Actions.AsyncChange(value: "test subscribe"), completion: {})
                 }
                 
                 it("notifies subscribers") {
@@ -98,7 +95,7 @@ class ReactiveStoreTests: QuickSpec {
                     beforeEach {
                         subscriptions.forEach { $0.cancel() }
                         keyPaths = nil
-                        subject.execute(MockStore.Action.Change(value: "test unsubscribe"), completion: {})
+                        subject.execute(MockStore.Actions.Change(value: "test unsubscribe"), completion: {})
                     }
                     
                     it("does not notify subscribers") {
@@ -117,7 +114,7 @@ class ReactiveStoreTests: QuickSpec {
                     subject.addObserver(for: [\MockStore.value]) { (store) in
                         changed = true
                     }.store(in: &subscriptions)
-                    subject.execute(MockStore.Action.AsyncChange(value: "test subscribe"), completion: {})
+                    subject.execute(MockStore.Actions.AsyncChange(value: "test subscribe"), completion: {})
                 }
                 
                 it("notifies subscribers") {
@@ -129,7 +126,7 @@ class ReactiveStoreTests: QuickSpec {
                     beforeEach {
                         subscriptions.forEach { $0.cancel() }
                         changed = nil
-                        subject.execute(MockStore.Action.Change(value: "test unsubscribe"), completion: {})
+                        subject.execute(MockStore.Actions.Change(value: "test unsubscribe"), completion: {})
                     }
                     
                     it("does not notify subscribers") {
@@ -150,12 +147,12 @@ class ReactiveStoreTests: QuickSpec {
                 context("when dispatched action on queue") {
 
                     beforeEach {
-                        subject.dispatch(MockStore.Action.Change(value: "queue test"), on: queue)
+                        subject.dispatch(MockStore.Actions.Change(value: "queue test"), on: queue)
                     }
 
                     it("performs action") {
                         expect(subject.value).toEventually(equal("queue test"))
-                        expect(subject.lastQueueIdentifier).toEventually(equal(queue.getSpecific(key: ReactiveStoreQueueIdentifierKey)))
+                        expect(subject.lastQueueIdentifier).toEventually(equal(queue.getSpecific(key: DispatcherQueueIdentifierKey)))
                     }
                 }
                 
@@ -163,13 +160,13 @@ class ReactiveStoreTests: QuickSpec {
 
                     beforeEach {
                         DispatchQueue.main.async {
-                            subject.dispatch(MockStore.Action.Change(value: "another queue test"), on: queue)
+                            subject.dispatch(MockStore.Actions.Change(value: "another queue test"), on: queue)
                         }
                     }
 
                     it("performs action") {
                         expect(subject.value).toEventually(equal("another queue test"))
-                        expect(subject.lastQueueIdentifier).toEventually(equal(queue.getSpecific(key: ReactiveStoreQueueIdentifierKey)))
+                        expect(subject.lastQueueIdentifier).toEventually(equal(queue.getSpecific(key: DispatcherQueueIdentifierKey)))
                     }
                 }
             }

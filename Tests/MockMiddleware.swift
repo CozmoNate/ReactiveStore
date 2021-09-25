@@ -1,16 +1,13 @@
 //
-//  MockMiddleware.swift
-//  ReactiveStoreTests
-//
 //  Created by Natan Zalkin on 21/10/2020.
 //  Copyright © 2020 Natan Zalkin. All rights reserved.
 //
 
 import Foundation
 
-@testable import ActionDispatcher
+@testable import Dispatcher
 
-class MockMiddleware: InterceptingMiddleware {
+class MockMiddleware: Middleware {
     
     var shouldExecute = true
     var lastExecutedDispatcher: Any?

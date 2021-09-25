@@ -1,5 +1,5 @@
 //
-//  ActionQueue.swift
+//  Pipeline.swift
 //
 //  Copyright © 2020 Natan Zalkin. All rights reserved.
 //
@@ -27,13 +27,13 @@
  *
  */
 
-public class ActionQueue {
+public class Pipeline {
     
     public typealias Action = () -> Void
     
-    internal class Item {
+    internal class Step {
         let action: Action
-        var next: Item?
+        var next: Step?
         
         init(_ action: @escaping Action) {
             self.action = action
@@ -44,33 +44,38 @@ public class ActionQueue {
         return head == nil
     }
     
-    internal var head: Item? {
+    internal var head: Step? {
         didSet { if head == nil { tail = nil } }
     }
     
-    internal var tail: Item?
+    internal var tail: Step?
     
     public init() {}
     
-    public func enqueue(_ action: @escaping Action) {
-        let item = Item(action)
+    /// Adds the action to the end of the pipeline
+    public func schedule(_ action: @escaping Action) {
+        let step = Step(action)
         if let last = tail {
-            last.next = item
-            tail = item
+            last.next = step
+            tail = step
         } else {
-            head = item
+            head = step
             tail = head
         }
     }
     
-    public func dequeue() -> Action? {
-        guard let first = head else {
-            return nil
+    /// Executes next action from the pipeline.
+    /// - Returns True when the pipeline is empty. Otherwise executes the next action and returns false.
+    public func flush() -> Bool {
+        if let first = head {
+            head = first.next
+            first.action()
+            return false
         }
-        head = first.next
-        return first.action
+        return true
     }
     
+    /// Clears the pipeline from the actions
     public func clear() {
         head = nil
     }

@@ -1,7 +1,4 @@
 //
-//  MiddlewareTests.swift
-//  ReactiveStoreTests
-//
 //  Created by Natan Zalkin on 21/10/2020.
 //  Copyright © 2020 Natan Zalkin. All rights reserved.
 //
@@ -27,11 +24,11 @@ class MiddlewareTests: QuickSpec {
                 
                 beforeEach {
                     subject.shouldExecute = false
-                    store.dispatch(MockStore.Action.Change(value: "test"))
+                    store.dispatch(MockStore.Actions.Change(value: "test"))
                 }
             
                 it("can stop action execution") {
-                    expect(subject.lastAskedAction).to(beAKindOf(MockStore.Action.Change.self))
+                    expect(subject.lastAskedAction).to(beAKindOf(MockStore.Actions.Change.self))
                     expect(subject.lastExecutedAction).to(beNil())
                 }
             }

@@ -1,5 +1,5 @@
 //
-//  InterceptingMiddleware.swift
+//  Middleware.swift
 //
 //  Copyright © 2020 Natan Zalkin. All rights reserved.
 //
@@ -29,7 +29,7 @@
 
 import Foundation
 
-public protocol InterceptingMiddleware {
+public protocol Middleware {
     
     /// This method is called by the dispatcher before executing the action
     /// - Parameters:

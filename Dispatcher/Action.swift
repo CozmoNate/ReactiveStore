@@ -1,5 +1,5 @@
 //
-//  ExecutableAction.swift
+//  Action.swift
 //
 //  Copyright © 2020 Natan Zalkin. All rights reserved.
 //
@@ -29,7 +29,7 @@
 
 import Foundation
 
-public protocol ExecutableAction {
+public protocol Action {
     
     associatedtype Dispatcher
     

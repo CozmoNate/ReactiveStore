@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1240"
+   LastUpgradeVersion = "1300"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2F07610924E7FC0500A91409"
-               BuildableName = "ActionDispatcher.framework"
-               BlueprintName = "ActionDispatcher"
+               BuildableName = "Dispatcher.framework"
+               BlueprintName = "Dispatcher"
                ReferencedContainer = "container:ReactiveStore.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -33,15 +33,15 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2F07610924E7FC0500A91409"
-            BuildableName = "ActionDispatcher.framework"
-            BlueprintName = "ActionDispatcher"
+            BuildableName = "Dispatcher.framework"
+            BlueprintName = "Dispatcher"
             ReferencedContainer = "container:ReactiveStore.xcodeproj">
          </BuildableReference>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2F5DF87724F234AE002079AA"
-            BuildableName = "ReactiveStore.framework"
-            BlueprintName = "ReactiveStore"
+            BuildableName = "ReactiveObject.framework"
+            BlueprintName = "ReactiveObject"
             ReferencedContainer = "container:ReactiveStore.xcodeproj">
          </BuildableReference>
       </CodeCoverageTargets>
@@ -79,8 +79,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2F07610924E7FC0500A91409"
-            BuildableName = "ActionDispatcher.framework"
-            BlueprintName = "ActionDispatcher"
+            BuildableName = "Dispatcher.framework"
+            BlueprintName = "Dispatcher"
             ReferencedContainer = "container:ReactiveStore.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

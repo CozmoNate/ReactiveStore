@@ -6,21 +6,21 @@ import PackageDescription
 let package = Package(
     name: "ReactiveStore",
     platforms: [
-        .iOS(.v10),
-        .macOS(.v10_12),
-        .watchOS(.v4),
-        .tvOS(.v10)
+        .iOS(.v12),
+        .macOS(.v10_14),
+        .watchOS(.v5),
+        .tvOS(.v12)
     ],
     products: [
-        .library(name: "ActionDispatcher",
-                 targets: ["ActionDispatcher"]),
+        .library(name: "Dispatcher",
+                 targets: ["Dispatcher"]),
         .library(name: "ReactiveStore",
                  targets: ["ReactiveStore"]),
     ],
     targets: [
-        .target(name: "ActionDispatcher",
+        .target(name: "Dispatcher",
                 dependencies: [],
-                path: "ActionDispatcher"),
+                path: "Dispatcher"),
         .target(name: "ReactiveStore",
                 dependencies: [],
                 path: "ReactiveStore"),
